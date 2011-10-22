@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.9.0" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+  <name>phpmig</name>
+  <channel>pear.atstsolutions.co.uk</channel>
+  <summary>A simple migrations tool for php.</summary>
+  <description>A simple migrations tool for php.</description>
+  <lead>
+    <name>Dave Marshall</name>
+    <user>davedevelopment</user>
+    <email>dave.marshall@atstsolutions.co.uk</email>
+    <active>yes</active>
+  </lead>
+  <date>@@DATE@@</date>
+  <time>@@TIME@@</time>
+  <version>
+    <release>@@VERSION@@</release>
+    <api>@@VERSION@@</api>
+  </version>
+  <stability>
+    <release>@@STABILITY@@</release>
+    <api>@@STABILITY@@</api>
+  </stability>
+  <license uri="https://github.com/davedevelopment/phpmig/blob/develop/LICENCE">MIT Licence</license>
+  <notes>
+-
+ </notes>
+  <contents>
+    <dir name="/">
+ @@CONTENTS@@
+    <file role="php" install-as="Phpmig/autoload.php.dist" name="src/Phpmig/autoload.php.dist"><tasks:replace from="@@PHP_DIR@@" to="php_dir" type="pear-config"/></file>
+    <file role="script" name="bin/phpmig"><tasks:replace from="/usr/bin/env php" to="php_bin" type="pear-config"/><tasks:replace from="dev" to="version" type="package-info"/></file>
+    <file role="doc" name="README.md"/>
+    <file role="doc" name="LICENCE"/>
+   </dir>
+  </contents>
+  <dependencies>
+    <required>
+      <php>
+        <min>5.3.0</min>
+      </php>
+      <pearinstaller>
+        <min>1.6.0</min>
+      </pearinstaller>
+      <package>
+        <name>ClassLoader</name>
+        <channel>pear.symfony.com</channel>
+        <min>2.0.0</min>
+        <max>3.999.9999</max>
+      </package>
+      <package>
+        <name>Config</name>
+        <channel>pear.symfony.com</channel>
+        <min>2.0.0</min>
+        <max>3.999.9999</max>
+      </package>
+      <package>
+        <name>Console</name>
+        <channel>pear.symfony.com</channel>
+        <min>2.0.0</min>
+        <max>3.999.9999</max>
+      </package>
+    </required>
+  </dependencies>
+  <phprelease>
+    <filelist>
+      <install as="phpmig" name="bin/phpmig"/>
+    </filelist>
+  </phprelease>
+  <changelog>
+    <release>
+      <version>
+        <release>@@VERSION@@</release>
+        <api>@@VERSION@@</api>
+      </version>
+      <stability>
+        <release>@@STABILITY@@</release>
+        <api>@@STABILITY@@</api>
+      </stability>
+      <date>@@DATE@@</date>
+      <license>MIT Licence</license>
+      <notes>
+      </notes>
+    </release>
+  </changelog>
+  <phprelease>
+    <filelist>
+      <install as="phpmig" name="bin/phpmig"/>
+    </filelist>
+  </phprelease>
+</package>

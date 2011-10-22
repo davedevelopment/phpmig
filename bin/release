@@ -1,0 +1,51 @@
+#!/usr/bin/env php
+<?php
+
+if (!isset($argv[1])) {
+  throw new RuntimeException('You must provide version.');
+}
+$version = $argv[1];
+
+if (!isset($argv[2])) {
+  throw new RuntimeException('You must provide stability status (alpha/beta/stable).');
+}
+$stability = $argv[2];
+
+$package = __DIR__ . '/../package.xml';
+$oldPackageContents = file_get_contents($package);
+
+$replace = array(
+    '@@DATE@@' => date('Y-m-d'),
+    '@@TIME@@' => date('H:i:s'),
+    '@@VERSION@@' => $version,
+    '@@STABILITY@@' => $stability,
+);
+
+$contents = array(); 
+$it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__ . '/../src/'));
+
+while($it->valid()) {
+
+    if (!$it->isDot() && !$it->isDir()) {
+        $name       = str_replace(__DIR__ . '/../', '', $it->key());
+        $installAs  = $it->getSubPathName();
+        $contents[] = "<file role=\"php\" install-as=\"$installAs\" name=\"$name\" />";
+    }
+
+    $it->next();
+}
+
+$replace['@@CONTENTS@@'] = implode("\n", $contents);
+
+$newPackageContents = $oldPackageContents;
+
+foreach($replace as $s => $r) {
+    $newPackageContents = str_replace($s, $r, $newPackageContents);
+}
+
+file_put_contents($package, $newPackageContents);
+
+system('pear package');
+
+file_put_contents($package, $oldPackageContents);
+exit(0);
