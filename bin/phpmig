@@ -1,2 +1,2 @@
 #!/usr/bin/env php
-<?php require_once __DIR__.'/phpmig.php';
+<?php require_once __DIR__.'/phpmig.load.php';

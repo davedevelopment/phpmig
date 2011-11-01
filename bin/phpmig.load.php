@@ -9,7 +9,9 @@
  * file that was distributed with this source code.
  */
 
-define('PHPMIG_VERSION', 'dev');
+if (!defined('PHPMIG_VERSION')) {
+    define('PHPMIG_VERSION', 'dev');
+}
 
 if (is_dir(__DIR__ . '/../src/Phpmig')) {
     require_once __DIR__ . "/../src/Phpmig/autoload.php.dist";
