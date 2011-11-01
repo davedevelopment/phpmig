@@ -23,6 +23,13 @@ The best way to install phpmig is using pear
     $ sudo pear channel-discover pear.atstsolutions.co.uk
     $ sudo pear install atst/phpmig-alpha
 
+Alternatively to pull phpmig from github 
+
+    $ git clone https://github.com/davedevelopment/phpmig.git phpmig
+    $ cd phpmig
+    $ git submodule init
+    $ git submodule update
+
 Phpmig can do a little configuring for you to get started, go to the root of your project and:
 
     $ phpmig init
