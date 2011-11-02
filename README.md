@@ -136,6 +136,29 @@ class AddRatingToLolCats extends Migration
 }
 ```
 
+Rolling Back
+------------
+
+You can roll back the last run migration by using the rollback command
+
+    $ phpmig rollback
+
+To rollback all migration up to a specific migration you can specify the rollback target
+
+    $ phpmig rollback -t 20111101000144
+
+or
+
+    $ phpmig rollback --target=20111101000144
+
+By specifying 0 as the rollback target phpmig will revert all migrations 
+
+    $ phpmig rollback -t 0
+
+You can also rollback only a specific migration using the down command
+
+    $ phpmig down 20111101000144
+
 Todo
 ----
 
