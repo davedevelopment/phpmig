@@ -64,6 +64,9 @@
             <fileset dir=".">
                 <exclude name="**/.git" />
                 <exclude name="**/.git/**" />
+                <exclude name="README.md" />
+                <exclude name=".gitignore" />
+                <exclude name="package.xml" />
                 <exclude name="${buildpath}" />
                 <exclude name="${buildpath}/**" />
                 <exclude name="${packagepath}" />
