@@ -4,16 +4,17 @@
     <!-- =================================================================== -->
     <!-- Run a complete build                                                -->
     <!-- =================================================================== -->
-    <target name="major" depends="build">
-        <version releasetype="major" file="VERSION" property="version"/>
+    <target name="major">
+        <version releasetype="major" file="VERSION" property="version" />
     </target>
     
-    <target name="minor" depends="build">
-        <version releasetype="minor" file="VERSION" property="version"/>
+    <target name="minor">
+        <version releasetype="minor" file="VERSION" property="version" />
     </target>
     
-    <target name="bugfix" depends="build">
-        <version releasetype="bugfix" file="VERSION" property="version"/>
+    <target name="bugfix">
+        <!-- Increase the build number -->
+        <version releasetype="bugfix" file="VERSION" property="version" />
     </target>
     
     <target name="build" 
@@ -29,13 +30,14 @@
                      ">
     </target>
     
-    <target name="testbuild">
+    <target name="testbuild" depends="bugfix">
         <!-- Load properties -->
         <property file="build.properties" />
         <!-- Check properties -->
         <echo>${phing.project.name}</echo>
         <echo>${buildpath}</echo>
         <echo>${packagepath}</echo>
+        <echo>${version}</echo>
     </target>
     
     <!-- =================================================================== -->
@@ -99,7 +101,7 @@
     <!-- =================================================================== -->
     <!-- Package files                                                       -->
     <!-- =================================================================== -->
-    <target name="package" depends="prepare,clone">
+    <target name="package" depends="prepare,clone,bugfix">
         <mkdir dir="${packagepath}" />
     </target>
     
@@ -117,7 +119,7 @@
                      stub="${buildpath}/bin/phpmig.stub.php">
             <fileset dir="${buildpath}" />
             <metadata>
-                <element name="version" value="1.0" />
+                <element name="version" value="${version}" />
                 <element name="authors">
                     <element name="Dave Marshall">
                         <element name="e-mail" value="dave.marshall@atstsolutions.co.uk" />
@@ -137,7 +139,7 @@
                      compression="gzip">
             <fileset dir="${buildpath}" />
             <metadata>
-                <element name="version" value="1.0" />
+                <element name="version" value="${version}" />
                 <element name="authors">
                     <element name="Dave Marshall">
                         <element name="e-mail" value="dave.marshall@atstsolutions.co.uk" />
@@ -157,7 +159,7 @@
                      compression="bzip2">
             <fileset dir="${buildpath}" />
             <metadata>
-                <element name="version" value="1.0" />
+                <element name="version" value="${version}" />
                 <element name="authors">
                     <element name="Dave Marshall">
                         <element name="e-mail" value="dave.marshall@atstsolutions.co.uk" />
