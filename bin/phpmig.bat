@@ -23,7 +23,7 @@ goto run
 goto cleanup
 
 :run
-"%PHP_COMMAND%" -d html_errors=off -qC "%PHPMIG_HOME%\bin\phpmig.load.php" %*
+"%PHP_COMMAND%" -d html_errors=off -qC "%PHPMIG_HOME%\bin\phpmig" %*
 goto cleanup
 
 :no_phpcommand
