@@ -62,7 +62,8 @@ EOT
         sort($versions);
 
         if (!empty($versions)) {
-            $current = $versions[count($versions) - 1];
+            // Get the last run migration number
+            $current = end($versions);
         } else {
             $current = 0;
         }
