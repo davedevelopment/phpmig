@@ -39,7 +39,7 @@ class MigrateCommand extends AbstractCommand
              ->setHelp(<<<EOT
 The <info>migrate</info> command runs all available migrations, optionally up to a specific version
 
-<info>phpmif migrate</info>
+<info>phpmig migrate</info>
 <info>phpmig migrate -t 20111018185412</info>
 
 EOT
@@ -107,6 +107,3 @@ EOT
         }
     }
 }
-
-
-
