@@ -4,19 +4,6 @@
     <!-- =================================================================== -->
     <!-- Run a complete build                                                -->
     <!-- =================================================================== -->
-    <target name="major">
-        <version releasetype="major" file="VERSION" property="version" />
-    </target>
-    
-    <target name="minor">
-        <version releasetype="minor" file="VERSION" property="version" />
-    </target>
-    
-    <target name="bugfix">
-        <!-- Increase the build number -->
-        <version releasetype="bugfix" file="VERSION" property="version" />
-    </target>
-    
     <target name="build" 
             depends="prepare,
                      clone,
@@ -30,7 +17,7 @@
                      ">
     </target>
     
-    <target name="testbuild" depends="bugfix">
+    <target name="testbuild">
         <!-- Load properties -->
         <property file="build.properties" />
         <!-- Check properties -->
@@ -104,7 +91,7 @@
     <!-- =================================================================== -->
     <!-- Package files                                                       -->
     <!-- =================================================================== -->
-    <target name="package" depends="prepare,clone,bugfix">
+    <target name="package" depends="prepare,clone">
         <mkdir dir="${packagepath}" />
     </target>
     
