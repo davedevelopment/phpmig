@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="phpmig" basedir="." default="build">
+    
+    <!-- =================================================================== -->
+    <!-- Run a complete build                                                -->
+    <!-- =================================================================== -->
+    <target name="build" 
+            depends="prepare,
+                     clone,
+                     stripphpcomments,
+                     stripwhitespace,
+                     targz,
+                     phar,
+                     phargz,
+                     pharbz2,
+                     cleanup
+                     ">
+    </target>
+    
+    <target name="testbuild">
+        <!-- Load properties -->
+        <property file="build.properties" />
+        <!-- Check properties -->
+        <echo>${phing.project.name}</echo>
+        <echo>${buildpath}</echo>
+        <echo>${packagepath}</echo>
+        <echo>${version}</echo>
+    </target>
+    
+    <!-- =================================================================== -->
+    <!-- Prepare for build                                                   -->
+    <!-- =================================================================== -->
+    <target name="prepare">
+        <!-- Load properties -->
+        <property file="build.properties" />
+        <!-- Clean up previous build -->
+        <delete file="${packagepath}/${phing.project.name}.phar" />
+        <delete file="${packagepath}/${phing.project.name}.gzip.phar" />
+        <delete file="${packagepath}/${phing.project.name}.bzip2.phar" />
+        <delete file="${packagepath}/${phing.project.name}.tar.gz" />
+        <delete dir="${buildpath}" 
+                includeemptydirs="true" 
+                failonerror="true" />
+        <!-- Create new build directory -->
+        <mkdir dir="${buildpath}" />
+    </target>
+    
+    <target name="clone" depends="prepare">
+        <!-- Copy all files needed files -->
+        <copy todir="${buildpath}" >
+            <fileset dir=".">
+                <exclude name="**/.git" />
+                <exclude name="**/.git/**" />
+                <exclude name="README.md" />
+                <exclude name=".gitignore" />
+                <exclude name="package.xml" />
+                <exclude name="${buildpath}" />
+                <exclude name="${buildpath}/**" />
+                <exclude name="${packagepath}" />
+                <exclude name="${packagepath}/**" />
+                <include name="**/*" />
+            </fileset>
+        </copy>
+    </target>
+    
+    <!-- =================================================================== -->
+    <!-- Strip files                                                         -->
+    <!-- =================================================================== -->
+    <target name="stripphpcomments" depends="prepare,clone">
+        <reflexive>
+            <fileset dir="${buildpath}">
+                <include pattern="**/*" />
+            </fileset>
+            <filterchain>
+                <stripphpcomments />
+            </filterchain>
+        </reflexive>
+    </target>
+    
+    <target name="stripwhitespace" depends="prepare,clone">
+        <reflexive>
+            <fileset dir="${buildpath}">
+                <include pattern="**/*" />
+            </fileset>
+            <filterchain>
+                <stripwhitespace />
+            </filterchain>
+        </reflexive>
+    </target>
+    
+    <!-- =================================================================== -->
+    <!-- Package files                                                       -->
+    <!-- =================================================================== -->
+    <target name="package" depends="prepare,clone">
+        <mkdir dir="${packagepath}" />
+    </target>
+    
+    <target name="targz" depends="prepare,clone,package">
+        <tar destfile="${packagepath}/${phing.project.name}.tar.gz" compression="gzip">
+            <fileset dir="${buildpath}">
+                <include name="*" />
+            </fileset>
+        </tar>
+    </target>
+    
+    <target name="phar" depends="prepare,clone,package">
+        <pharpackage destfile="${packagepath}/${phing.project.name}.phar" 
+                     basedir="${buildpath}" 
+                     stub="${buildpath}/bin/phpmig.stub.php">
+            <fileset dir="${buildpath}" />
+            <metadata>
+                <element name="version" value="${version}" />
+                <element name="authors">
+                    <element name="Dave Marshall">
+                        <element name="e-mail" value="dave.marshall@atstsolutions.co.uk" />
+                    </element>
+                    <element name="David Neilsen">
+                        <element name="e-mail" value="david@panmedia.co.nz" />
+                    </element>
+                </element>
+            </metadata>
+        </pharpackage>
+    </target>
+    
+    <target name="phargz" depends="prepare,clone,package">
+        <pharpackage destfile="${packagepath}/${phing.project.name}.gzip.phar" 
+                     basedir="${buildpath}"
+                     stub="${buildpath}/bin/phpmig.stub.php"
+                     compression="gzip">
+            <fileset dir="${buildpath}" />
+            <metadata>
+                <element name="version" value="${version}" />
+                <element name="authors">
+                    <element name="Dave Marshall">
+                        <element name="e-mail" value="dave.marshall@atstsolutions.co.uk" />
+                    </element>
+                    <element name="David Neilsen">
+                        <element name="e-mail" value="david@panmedia.co.nz" />
+                    </element>
+                </element>
+            </metadata>
+        </pharpackage>
+    </target>
+    
+    <target name="pharbz2" depends="prepare,clone,package">
+        <pharpackage destfile="${packagepath}/${phing.project.name}.bzip2.phar" 
+                     basedir="${buildpath}" 
+                     stub="${buildpath}/bin/phpmig.stub.php"
+                     compression="bzip2">
+            <fileset dir="${buildpath}" />
+            <metadata>
+                <element name="version" value="${version}" />
+                <element name="authors">
+                    <element name="Dave Marshall">
+                        <element name="e-mail" value="dave.marshall@atstsolutions.co.uk" />
+                    </element>
+                    <element name="David Neilsen">
+                        <element name="e-mail" value="david@panmedia.co.nz" />
+                    </element>
+                </element>
+            </metadata>
+        </pharpackage>
+    </target>
+    
+    <!-- =================================================================== -->
+    <!-- Cleanup files                                                       -->
+    <!-- =================================================================== -->
+    <target name="cleanup">
+        <delete dir="${buildpath}" includeemptydirs="true" failonerror="true" />
+    </target>
+        
+</project>
