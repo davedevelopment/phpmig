@@ -11,7 +11,7 @@ How does it work?
 
     $ phpmig migrate
 
-Phpmig aims to be vendor/framework independant, and in doing so, requires you to do a little bit of work up front to use it.
+Phpmig aims to be vendor/framework independent, and in doing so, requires you to do a little bit of work up front to use it.
 
 Phpmig requires a bootstrap file, that must return an object that implements the ArrayAccess interface with several predefined keys. We recommend returning an instance of [Pimple][pimple], a simple dependency injection container (there's a version bundled at \Phpmig\Pimple\Pimple). This is also an ideal opportunity to expose your own services to the migrations themselves, which have access to the container. 
 
@@ -149,7 +149,7 @@ Todo
 Contributing
 ------------
 
-Feel free to fork and send me pull requests, but I don't have a 1.0 release yet, so I may change the API quite frequently. If you want to implement somthing that I might easily break, please drop me an email
+Feel free to fork and send me pull requests, but I don't have a 1.0 release yet, so I may change the API quite frequently. If you want to implement something that I might easily break, please drop me an email
 
 Inspiration
 -----------
