@@ -72,9 +72,6 @@ EOT
             // Get the migration before the last run migration
             $prev = count($versions) - 2;
             $version = $prev >= 0 ? $versions[$prev] : 0;
-            var_dump($prev);
-            var_dump($version);
-            var_dump($versions);
         } else {
             // Get the first migration number
             $first = reset($versions);
