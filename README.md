@@ -100,6 +100,72 @@ $container['phpmig.migrations'] = function() {
 return $container;   
 ```
 
+Unfortunately Zend Framework does not have a Database Abstraction Layer and
+setting up migrations requires couple additional steps. You first need to prepare
+the configuration. It might be in any format supported by Zend_Config. Here is an
+example in YAML for MySQL:
+
+``` yaml
+phpmig:
+  tableName: migrations
+  createStatement: CREATE TABLE migrations ( version INT(11) UNSIGNED NOT NULL );
+  hasSchemaStatement: DESCRIBE migrations;
+```
+
+In configuration file you need to provide the table name where the migrations will
+be stored and create statement as well as DB specific statement describing the table.
+The hasSchemaStatement will be used to check if the migrations table was already
+created.
+
+Here is how the bootstrap file should look like:
+
+``` php
+<?php
+
+# phpmig.php
+
+// Set some constants
+define('PHPMIG_PATH', realpath(dirname(__FILE__)));
+define('VENDOR_PATH', PHPMIG_PATH . '/vendor');
+set_include_path(get_include_path() . PATH_SEPARATOR . VENDOR_PATH);
+
+// Register autoloading
+require_once 'Zend/Loader/Autoloader.php';
+$autoloader = Zend_Loader_Autoloader::getInstance();
+$autoloader->registerNamespace('Zend_');
+
+use \Phpmig\Pimple\Pimple,
+    \Phpmig\Adapter\Zend\Db;
+
+$container = new Pimple();
+
+$container['db'] = $container->share(function() {
+    return Zend_Db::factory('pdo_mysql', array(
+        'dbname' => 'DBNAME',
+        'username' => 'USERNAME',
+        'password' => 'PASSWORD',
+        'host' => 'localhost'
+    ));
+});
+
+$container['phpmig.adapter'] = $container->share(function() use ($container) {
+    $configuration = null;
+    $configurationFile = PHPMIG_PATH . '/configuration.yaml';
+
+    if (file_exists($configurationFile)) {
+        $configuration = new Zend_Config_Yaml($configurationFile, null, array('ignore_constants' => true));
+    }
+
+    return new Db($container['db'], $configuration);
+});
+
+$container['phpmig.migrations'] = function() {
+    return glob(__DIR__ . DIRECTORY_SEPARATOR . 'migrations/*.php');
+};
+
+return $container;
+```
+
 Writing Migrations
 ------------------
 
