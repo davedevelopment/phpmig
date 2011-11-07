@@ -109,13 +109,11 @@ example in YAML for MySQL:
 phpmig:
   tableName: migrations
   createStatement: CREATE TABLE migrations ( version INT(11) UNSIGNED NOT NULL );
-  hasSchemaStatement: DESCRIBE migrations;
 ```
 
 In configuration file you need to provide the table name where the migrations will
-be stored and create statement as well as DB specific statement describing the table.
-The hasSchemaStatement will be used to check if the migrations table was already
-created.
+be stored and a create statement. You can use one of the configurations provided
+in the config folder for some common RDBMS.
 
 Here is how the bootstrap file should look like:
 
@@ -150,7 +148,7 @@ $container['db'] = $container->share(function() {
 
 $container['phpmig.adapter'] = $container->share(function() use ($container) {
     $configuration = null;
-    $configurationFile = PHPMIG_PATH . '/configuration.yaml';
+    $configurationFile = PHPMIG_PATH . '/config/mysql.yaml';
 
     if (file_exists($configurationFile)) {
         $configuration = new Zend_Config_Yaml($configurationFile, null, array('ignore_constants' => true));

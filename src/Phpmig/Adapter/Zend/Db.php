@@ -36,11 +36,6 @@ class Db implements AdapterInterface
     protected $createStatement;
 
     /**
-     * @var string
-     */
-    protected $hasSchemaStatement;
-
-    /**
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $adapter;
@@ -56,9 +51,6 @@ class Db implements AdapterInterface
         $this->adapter = $adapter;
         $this->tableName = $configuration->phpmig->tableName;
         $this->createStatement = $configuration->phpmig->createStatement;
-        $this->schemaStatement = $configuration->phpmig->schemaStatement;
-        $this->hasSchemaStatement = $configuration->phpmig->hasSchemaStatement;
-
     }
 
     /**
@@ -113,16 +105,14 @@ class Db implements AdapterInterface
     public function hasSchema()
     {
         try {
-            $statement = $this->adapter->query($this->hasSchemaStatement);
-            $statement->execute();
-            $results = $statement->fetchAll();
+            $schema = $this->adapter->describeTable($this->tableName);
         } catch (\Zend_Db_Statement_Exception $exception) {
             return false;
         } catch (\PDOException $exception) {
             return false;
         }
 
-        if (is_array($results) && !empty($results)) {
+        if (is_array($schema) && !empty($schema)) {
             return true;
         }
 
@@ -136,7 +126,12 @@ class Db implements AdapterInterface
      */
     public function createSchema()
     {
-        $this->adapter->query($this->createStatement);
+        try {
+            $this->adapter->query($this->createStatement);
+        } catch (\Zend_Db_Statement_Exception $exception) {
+            throw new \InvalidArgumentException('Please provide a valid SQL statement for your database system in the config file as phpmig.createStatement');
+        }
+
         return $this;
     }
 

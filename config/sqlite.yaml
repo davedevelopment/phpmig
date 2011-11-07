@@ -1,0 +1,3 @@
+phpmig:
+  tableName: migrations
+  createStatement: CREATE TABLE migrations ( version UNSIGNED INTEGER );
