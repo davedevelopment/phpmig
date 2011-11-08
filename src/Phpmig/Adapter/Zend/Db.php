@@ -25,6 +25,11 @@ use \Phpmig\Migration\Migration,
  */
 class Db implements AdapterInterface
 {
+    const MSSQL_CREATE_STATEMENT = 'CREATE TABLE %s ( version int NOT NULL );';
+    const MYSQL_CREATE_STATEMENT = 'CREATE TABLE `%s` ( version INT(11) UNSIGNED NOT NULL );';
+    const PGSQL_CREATE_STATEMENT = 'CREATE TABLE %s ( version integer NOT NULL );';
+    const SQLITE_CREATE_STATEMENT = 'CREATE TABLE %s ( version UNSIGNED INTEGER );';
+
     /**
      * @var string
      */
@@ -122,12 +127,36 @@ class Db implements AdapterInterface
     /**
      * Create Schema
      *
+     * @throws \InvalidArgumentException
      * @return AdapterInterface
      */
     public function createSchema()
     {
+        $sql = $this->createStatement;
+        if ($sql === null) {
+            switch(get_class($this->adapter)) {
+                case 'Zend_Db_Adapter_Pdo_Mssql':
+                    $createStatement = static::MSSQL_CREATE_STATEMENT;
+                    break;
+                case 'Zend_Db_Adapter_Pdo_Mysql':
+                case 'Zend_Db_Adapter_Mysqli':
+                    $createStatement = static::MYSQL_CREATE_STATEMENT;
+                    break;
+                case 'Zend_Db_Adapter_Pdo_Pgsql':
+                    $createStatement = static::PGSQL_CREATE_STATEMENT;
+                    break;
+                case 'Zend_Db_Adapter_Pdo_Sqlite':
+                    $createStatement = static::SQLITE_CREATE_STATEMENT;
+                    break;
+                default:
+                    throw new \InvalidArgumentException('Please provide a valid SQL statement for your database system in the config file as phpmig.createStatement');
+                    break;
+            }
+            $sql = sprintf($createStatement, $this->tableName);
+        }
+
         try {
-            $this->adapter->query($this->createStatement);
+            $this->adapter->query($sql);
         } catch (\Zend_Db_Statement_Exception $exception) {
             throw new \InvalidArgumentException('Please provide a valid SQL statement for your database system in the config file as phpmig.createStatement');
         }

@@ -1,3 +1,0 @@
-phpmig:
-  tableName: migrations
-  createStatement: CREATE TABLE migrations ( version integer NOT NULL );
