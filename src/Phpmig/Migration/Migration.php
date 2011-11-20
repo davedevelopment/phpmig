@@ -5,6 +5,8 @@
  */
 namespace Phpmig\Migration;
 
+use Symfony\Component\Console\Output\OutputInterface;
+
 /**
  * This file is part of phpmig
  *

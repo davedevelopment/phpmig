@@ -178,6 +178,8 @@ abstract class AbstractCommand extends Command
                 ));
             }
 
+            $migration->setOutput($output); // inject output
+
             $versions[$version] = $migration;
         }
 
