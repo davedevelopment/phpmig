@@ -18,12 +18,31 @@ Phpmig requires a bootstrap file, that must return an object that implements the
 Getting Started
 ---------------
 
-The best way to install phpmig is using pear
+The best way to install phpmig is using composer. Start by creating or adding to your project's `composer.json` file:
+
+``` JSON
+    {
+        "require": {
+            "php": ">=5.3.1",
+            "davedevelopment/phpmig": "*"
+        },
+
+        "config": {
+            "bin-dir": "bin/"
+        }
+    }
+
+Then download composer.phar and run install command
+
+    $ wget http://getcomposer.org/composer.phar
+    $ php composer.phar install
+
+The second best way to install phpmig is using pear
 
     $ sudo pear channel-discover pear.atstsolutions.co.uk
     $ sudo pear install atst/phpmig-alpha
 
-Alternatively to pull phpmig from github 
+Alternatively to pull phpmig from github (*WARNING* the git submodules will soon disappear in favour of using composer during development)
 
     $ git clone https://github.com/davedevelopment/phpmig.git phpmig
     $ cd phpmig
