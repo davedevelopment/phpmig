@@ -38,6 +38,10 @@ Then download composer.phar and run install command
     $ wget http://getcomposer.org/composer.phar
     $ php composer.phar install
 
+You can then use the localised version of phpmig for that project
+
+    $ bin/phpmig --version
+
 The second best way to install phpmig is using pear
 
     $ sudo pear channel-discover pear.atstsolutions.co.uk
