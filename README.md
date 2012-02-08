@@ -31,6 +31,7 @@ The best way to install phpmig is using composer. Start by creating or adding to
             "bin-dir": "bin/"
         }
     }
+```
 
 Then download composer.phar and run install command
 
