@@ -1,0 +1,29 @@
+{
+    "name": "davedevelopment/phpmig",
+    "type": "library",
+    "description": "Simple migrations system for php",
+    "keywords": ["migrations", "database migrations"],
+    "homepage": "http://github.com/davedevelopment/phpmig",
+    "license": "MIT",
+    "authors": [{
+        "name": "Dave Marshall",
+        "email": "dave.marshall@atstsolutions.co.uk",
+        "homepage": "http://davedevelopment.co.uk"
+    },
+    {
+        "name": "David Nielsen",
+        "email": "david@panmedia.co.nz"
+    }],
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/console": "*",
+        "symfony/config": "*",
+        "symfony/class-loader": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Phpmig": "src/"
+        },
+        "bin": ["bin/phpmig"]
+    }
+}
