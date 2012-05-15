@@ -14,10 +14,10 @@ if (!defined('PHPMIG_VERSION')) {
     define('PHPMIG_VERSION', 'dev');
 }
 
-if (is_file(__DIR__ . '/../vendor/.composer/autoload.php')) {
-    require_once __DIR__ . '/../vendor/.composer/autoload.php';
-} else if (is_file(__DIR__ . '/../../../.composer/autoload.php')) {
-    require_once __DIR__ . '/../../../.composer/autoload.php';
+if (is_file(__DIR__ . '/../vendor/autoload.php')) {
+    require_once __DIR__ . '/../vendor/autoload.php';
+} else if (is_file(__DIR__ . '/../../../autoload.php')) {
+    require_once __DIR__ . '/../../../autoload.php';
 } else if (is_dir(__DIR__ . '/../src/Phpmig')) {
     require_once __DIR__ . "/../src/Phpmig/autoload.php.dist";
 } else {
