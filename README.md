@@ -132,7 +132,7 @@ example in YAML for MySQL:
 ``` yaml
 phpmig:
   tableName: migrations
-  createStatement: CREATE TABLE migrations ( version INT(11) UNSIGNED NOT NULL );
+  createStatement: CREATE TABLE migrations ( version VARCHAR(255) NOT NULL );
 ```
 
 In configuration file you need to provide the table name where the migrations will

@@ -25,10 +25,10 @@ use \Phpmig\Migration\Migration,
  */
 class Db implements AdapterInterface
 {
-    const MSSQL_CREATE_STATEMENT = 'CREATE TABLE %s ( version int NOT NULL );';
-    const MYSQL_CREATE_STATEMENT = 'CREATE TABLE `%s` ( version INT(11) UNSIGNED NOT NULL );';
-    const PGSQL_CREATE_STATEMENT = 'CREATE TABLE %s ( version integer NOT NULL );';
-    const SQLITE_CREATE_STATEMENT = 'CREATE TABLE %s ( version UNSIGNED INTEGER );';
+    const MSSQL_CREATE_STATEMENT = 'CREATE TABLE %s ( version VARCHAR(255) NOT NULL );';
+    const MYSQL_CREATE_STATEMENT = 'CREATE TABLE `%s` ( version VARCHAR(255) UNSIGNED NOT NULL );';
+    const PGSQL_CREATE_STATEMENT = 'CREATE TABLE %s ( version VARCHAR(255) NOT NULL );';
+    const SQLITE_CREATE_STATEMENT = 'CREATE TABLE %s ( version VARCHAR);';
 
     /**
      * @var string
