@@ -118,7 +118,7 @@ class DBAL implements AdapterInterface
     {
         $schema  = new \Doctrine\DBAL\Schema\Schema();
         $table   = $schema->createTable($this->tableName);
-        $table->addColumn("version", "integer", array("unsigned" => true));
+        $table->addColumn("version", "string", array("length" => 255));
         $queries = $schema->toSql($this->connection->getDatabasePlatform());
         foreach($queries as $sql) {
             $this->connection->query($sql);
