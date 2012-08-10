@@ -95,9 +95,9 @@ class Db implements AdapterInterface
      */
     public function down(Migration $migration)
     {
-        $this->adapter->delete($this->tableName, array(
-            'version' => $migration->getVersion(),
-        ));
+        $this->adapter->delete($this->tableName,
+            $this->adapter->quoteInto('version = ?', $migration->getVersion())
+        );
 
         return $this;
     }
