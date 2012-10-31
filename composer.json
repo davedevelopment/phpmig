@@ -20,6 +20,9 @@
         "symfony/config": "2.*",
         "symfony/class-loader": "2.*"
     },
+    "require-dev": {
+        "mockery/mockery": "*@dev"
+    },
     "autoload": {
         "psr-0": {
             "Phpmig": "src/"

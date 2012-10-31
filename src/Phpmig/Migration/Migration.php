@@ -6,6 +6,7 @@
 namespace Phpmig\Migration;
 
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Helper\DialogHelper;
 
 /**
  * This file is part of phpmig
@@ -154,6 +155,68 @@ class Migration
     public function setOutput(OutputInterface $output)
     {
         $this->output = $output;
+        return $this;
+    }
+
+    /**
+     * Ask for input
+     *
+     * @param string $question
+     * @param mixed $default
+     * @return string The users answer
+     */
+    public function ask($question, $default = null)
+    {
+        $this->getDialogHelper()->ask($this->getOutput(), $question, $default);
+    } 
+
+    /**
+     * Ask for confirmation
+     *
+     * @param string $question
+     * @param mixed $default
+     * @return string The users answer
+     */
+    public function confirm($question, $default = true)
+    {
+        $this->getDialogHelper()->askConfirmation($this->getOutput(), $question, $default);
+    } 
+
+    /**
+     * Ask for hidden answer (e.g. ******)
+     *
+     * @param string $question
+     * @param boolean $fallback - whether to allow non-hidden if unavailable
+     * @return string The users answer
+     */
+    public function askForHiddenResponse($question, $fallback = true)
+    {
+        $this->getDialogHelper()->askHiddenResponse($this->getOutput(), $question, $fallback);
+    } 
+
+    /**
+     * Get Dialog Helper
+     *
+     * @return DialogHelper
+     */
+    public function getDialogHelper()
+    {
+        if ($this->dialogHelper) {
+            return $this->dialogHelper;
+        }
+
+        return $this->dialogHelper = new DialogHelper();
+    }
+
+    /**
+     * Set Dialog Helper
+     *
+     * @param DialogHelper $dialogHelper
+     * @return Migration
+     */
+    public function setDialogHelper(DialogHelper $dialogHelper)
+    {
+        $this->dialogHelper = $dialogHelper;
         return $this;
     }
 }
