@@ -43,16 +43,4 @@ class MigrationTest extends \PHPUnit_Framework_Testcase
         $this->assertEquals($ans, $this->object->confirm($question, $default));
     }
     
-    /**
-     * @test
-     */
-    public function shouldAskForHiddenResponse()
-    {
-        $this->dialogHelper->shouldReceive("askHiddenResponse")
-            ->with($this->output, $question = "Wat?", $default = true)
-            ->andReturn($ans = "dave")
-            ->once();
-
-        $this->assertEquals($ans, $this->object->askForHiddenResponse($question, $default));
-    }
 }

@@ -183,18 +183,6 @@ class Migration
     } 
 
     /**
-     * Ask for hidden answer (e.g. ******)
-     *
-     * @param string $question
-     * @param boolean $fallback - whether to allow non-hidden if unavailable
-     * @return string The users answer
-     */
-    public function askForHiddenResponse($question, $fallback = true)
-    {
-        return $this->getDialogHelper()->askHiddenResponse($this->getOutput(), $question, $fallback);
-    } 
-
-    /**
      * Get Dialog Helper
      *
      * @return DialogHelper
