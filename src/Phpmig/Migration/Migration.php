@@ -167,7 +167,7 @@ class Migration
      */
     public function ask($question, $default = null)
     {
-        $this->getDialogHelper()->ask($this->getOutput(), $question, $default);
+        return $this->getDialogHelper()->ask($this->getOutput(), $question, $default);
     } 
 
     /**
@@ -179,7 +179,7 @@ class Migration
      */
     public function confirm($question, $default = true)
     {
-        $this->getDialogHelper()->askConfirmation($this->getOutput(), $question, $default);
+        return $this->getDialogHelper()->askConfirmation($this->getOutput(), $question, $default);
     } 
 
     /**
@@ -191,7 +191,7 @@ class Migration
      */
     public function askForHiddenResponse($question, $fallback = true)
     {
-        $this->getDialogHelper()->askHiddenResponse($this->getOutput(), $question, $fallback);
+        return $this->getDialogHelper()->askHiddenResponse($this->getOutput(), $question, $fallback);
     } 
 
     /**

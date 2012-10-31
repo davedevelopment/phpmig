@@ -24,9 +24,10 @@ class MigrationTest extends \PHPUnit_Framework_Testcase
     {
         $this->dialogHelper->shouldReceive("ask")
             ->with($this->output, $question = "Wat?", $default = "huh?")
+            ->andReturn($ans = "dave")
             ->once();
 
-        $this->object->ask($question, $default);
+        $this->assertEquals($ans, $this->object->ask($question, $default));
     }
 
     /**
@@ -36,9 +37,10 @@ class MigrationTest extends \PHPUnit_Framework_Testcase
     {
         $this->dialogHelper->shouldReceive("askConfirmation")
             ->with($this->output, $question = "Wat?", $default = true)
+            ->andReturn($ans = "dave")
             ->once();
 
-        $this->object->confirm($question, $default);
+        $this->assertEquals($ans, $this->object->confirm($question, $default));
     }
     
     /**
@@ -48,8 +50,9 @@ class MigrationTest extends \PHPUnit_Framework_Testcase
     {
         $this->dialogHelper->shouldReceive("askHiddenResponse")
             ->with($this->output, $question = "Wat?", $default = true)
+            ->andReturn($ans = "dave")
             ->once();
 
-        $this->object->askForHiddenResponse($question, $default);
+        $this->assertEquals($ans, $this->object->askForHiddenResponse($question, $default));
     }
 }
