@@ -42,5 +42,14 @@ class MigrationTest extends \PHPUnit_Framework_Testcase
 
         $this->assertEquals($ans, $this->object->confirm($question, $default));
     }
+
+    /**
+     * @test
+     */
+    public function shouldRetrieveServices()
+    {
+        $this->object->setContainer(new \ArrayObject(array("service" => 123)));
+        $this->assertEquals(123, $this->object->get("service"));
+    }
     
 }

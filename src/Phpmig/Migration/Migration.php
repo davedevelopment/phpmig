@@ -183,6 +183,18 @@ class Migration
     } 
 
     /**
+     * Get something from the container
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function get($key)
+    {
+        $c = $this->getContainer();
+        return $c[$key];
+    }
+
+    /**
      * Get Dialog Helper
      *
      * @return DialogHelper
