@@ -1,6 +1,52 @@
 {
-    "hash": "1c02ee79127ddedc853373ca32a59def",
+    "hash": "5c484b8facccddd5af5820018039e64c",
     "packages": [
+        {
+            "name": "pimple/pimple",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git://github.com/fabpot/Pimple.git",
+                "reference": "v1.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/fabpot/Pimple/zipball/v1.0.0",
+                "reference": "v1.0.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "time": "2012-05-08 06:57:24",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-0": {
+                    "Pimple": "lib/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Pimple is a simple Dependency Injection Container for PHP 5.3",
+            "homepage": "http://pimple.sensiolabs.org",
+            "keywords": [
+                "dependency injection",
+                "container"
+            ]
+        },
         {
             "name": "symfony/class-loader",
             "version": "v2.1.3",
@@ -144,63 +190,56 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com"
-        }
-    ],
-    "packages-dev": [
+        },
         {
-            "name": "mockery/mockery",
-            "version": "dev-master",
+            "name": "symfony/yaml",
+            "version": "v2.1.3",
+            "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
-                "url": "git://github.com/padraic/mockery.git",
-                "reference": "b6adea3c241798c5afcbe2a2ac9294ce635a096f"
+                "url": "https://github.com/symfony/Yaml",
+                "reference": "v2.1.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/padraic/mockery/zipball/b6adea3c241798c5afcbe2a2ac9294ce635a096f",
-                "reference": "b6adea3c241798c5afcbe2a2ac9294ce635a096f",
+                "url": "https://github.com/symfony/Yaml/zipball/v2.1.3",
+                "reference": "v2.1.3",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.2"
+                "php": ">=5.3.3"
             },
-            "suggest": {
-                "Hamcrest": "1.0.0"
-            },
-            "time": "1348513062",
+            "time": "2012-10-29 04:15:41",
             "type": "library",
-            "installation-source": "source",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.1-dev"
+                }
+            },
+            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
-                    "Mockery": "library/"
+                    "Symfony\\Component\\Yaml": ""
                 }
             },
             "license": [
-                "New BSD"
+                "MIT"
             ],
             "authors": [
                 {
-                    "name": "Pádraic Brady",
-                    "email": "padraic.brady@gmail.com",
-                    "homepage": "http://blog.astrumfutura.com"
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
                 }
             ],
-            "description": "Mockery is a simple yet flexible PHP mock object framework for use in unit testing with PHPUnit, PHPSpec or any other testing framework. Its core goal is to offer a test double framework with a succint API capable of clearly defining all possible object operations and interactions using a human readable Domain Specific Language (DSL). Designed as a drop in alternative to PHPUnit's phpunit-mock-objects library, Mockery is easy to integrate with PHPUnit and can operate alongside phpunit-mock-objects without the World ending.",
-            "homepage": "http://github.com/padraic/mockery",
-            "keywords": [
-                "testing",
-                "library",
-                "BDD",
-                "TDD",
-                "test",
-                "mockery",
-                "mock",
-                "stub",
-                "test double",
-                "mock objects"
-            ]
+            "description": "Symfony Yaml Component",
+            "homepage": "http://symfony.com"
         }
     ],
+    "packages-dev": null,
     "aliases": [
 
     ],
