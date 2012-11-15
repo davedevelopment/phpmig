@@ -42,17 +42,10 @@ You can then use the localised version of phpmig for that project
 
     $ bin/phpmig --version
 
-The second best way to install phpmig is using pear
+The second best way to install phpmig is using pear [DEPRECATED - there will not be a PEAR distribution of 1.0]
 
     $ sudo pear channel-discover pear.atstsolutions.co.uk
     $ sudo pear install atst/phpmig-alpha
-
-Alternatively to pull phpmig from github (*WARNING* the git submodules will soon disappear in favour of using composer during development)
-
-    $ git clone https://github.com/davedevelopment/phpmig.git phpmig
-    $ cd phpmig
-    $ git submodule init
-    $ git submodule update
 
 Phpmig can do a little configuring for you to get started, go to the root of your project and:
 
@@ -101,7 +94,7 @@ use Doctrine's DBAL:
 // do some autoloading of Doctrine here
 
 use \Phpmig\Adapter,
-    \Phpmig\Pimple\Pimple,
+    \Pimple\Pimple, // if you used composer, use Pimple\Pimple!
     \Doctrine\DBAL\DriverManager;
 
 $container = new Pimple();
