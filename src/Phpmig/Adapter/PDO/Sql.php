@@ -2,10 +2,10 @@
 
 namespace Phpmig\Adapter\PDO;
 
-use \Phpmig\Migration\Migration,
-    \Phpmig\Adapter\AdapterInterface;
+use Phpmig\Migration\Migration,
+    Phpmig\Adapter\AdapterInterface;
 
-class Sql implements Phpmig\Adapter\AdapterInterface
+class Sql implements AdapterInterface
 {
 
     /**
@@ -34,7 +34,7 @@ class Sql implements Phpmig\Adapter\AdapterInterface
 
     private function quotedTableName()
     {
-        return $this->connection->quote($this->tableName);
+        return "`{$this->tableName}`";
     }
 
     /**
@@ -45,7 +45,7 @@ class Sql implements Phpmig\Adapter\AdapterInterface
     public function fetchAll()
     {
         $sql = "SELECT `version` FROM {$this->quotedTableName()} ORDER BY `version` ASC";
-        return $this->connection->query($sql, PDO::FETCH_COLUMN)->fetchAll();
+        return $this->connection->query($sql, PDO::FETCH_COLUMN, 0)->fetchAll();
     }
 
     /**
