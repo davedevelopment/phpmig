@@ -90,11 +90,8 @@ provided adapters to store this information in your database.
 
 # phpmig.php
 
-// do some autoloading of Doctrine here
-
 use \Phpmig\Adapter,
-    \Pimple\Pimple, // if you used composer, use Pimple\Pimple!
-    \Doctrine\DBAL\DriverManager;
+    \Pimple\Pimple;
 
 $container = new Pimple();
 
