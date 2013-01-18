@@ -83,8 +83,36 @@ Better Persistence
 
 The init command creates a bootstrap file that specifies a flat file to use to
 track which migrations have been run, which isn't great. You can use the
-provided adapters to store this information in your database. For example, to
-use Doctrine's DBAL:
+provided adapters to store this information in your database.
+
+``` php
+<?php
+
+# phpmig.php
+
+use \Phpmig\Adapter,
+    \Pimple\Pimple;
+
+$container = new Pimple();
+
+$container['db'] = $container->share(function() {
+    return new PDO('mysql:dbname=testdb;host=127.0.0.1','username','passwd');
+});
+
+$container['phpmig.adapter'] = $container->share(function() use ($container) {
+    return new Adapter\PDO\Sql($container['db'], 'migrations');
+});
+
+$container['phpmig.migrations'] = function() {
+    return glob(__DIR__ . DIRECTORY_SEPARATOR . 'migrations/*.php');
+};
+
+return $container;
+
+```
+
+
+Or you can use Doctrine's DBAL:
 
 ``` php
 <?php

@@ -5,6 +5,11 @@ namespace Phpmig\Adapter\PDO;
 use Phpmig\Migration\Migration,
     Phpmig\Adapter\AdapterInterface;
 
+/**
+ * Simple PDO adapter to work with SQL database
+ * @author Samuel Laulhau https://github.com/lalop
+ */
+
 class Sql implements AdapterInterface
 {
 
