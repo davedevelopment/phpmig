@@ -2,6 +2,8 @@
 
 namespace Phpmig\Pimple;
 
+use InvalidArgumentException;
+
 /*
  * This file is part of Pimple.
  *
