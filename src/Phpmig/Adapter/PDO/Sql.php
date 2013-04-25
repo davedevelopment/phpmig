@@ -3,7 +3,8 @@
 namespace Phpmig\Adapter\PDO;
 
 use Phpmig\Migration\Migration,
-    Phpmig\Adapter\AdapterInterface;
+    Phpmig\Adapter\AdapterInterface,
+    PDO;
 
 /**
  * Simple PDO adapter to work with SQL database

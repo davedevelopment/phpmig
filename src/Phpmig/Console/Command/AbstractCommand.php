@@ -94,7 +94,7 @@ abstract class AbstractCommand extends Command
         $container = $func();
 
         if (!($container instanceof \ArrayAccess)) {
-            throw new RuntimeException($bootstrap . " must return object of type \ArrayAccess");
+            throw new \RuntimeException($bootstrap . " must return object of type \ArrayAccess");
         }
         $this->setContainer($container);
 
@@ -102,13 +102,13 @@ abstract class AbstractCommand extends Command
          * Adapter
          */
         if (!isset($container['phpmig.adapter'])) {
-            throw new RuntimeException($bootstrap . " must return container with service at phpmig.adapter");
+            throw new \RuntimeException($bootstrap . " must return container with service at phpmig.adapter");
         }
 
         $adapter = $container['phpmig.adapter'];
 
         if (!($adapter instanceof \Phpmig\Adapter\AdapterInterface)) {
-            throw new RuntimeException("phpmig.adapter must be an instance of \Phpmig\Adapter\AdapterInterface");
+            throw new \RuntimeException("phpmig.adapter must be an instance of \Phpmig\Adapter\AdapterInterface");
         }
 
         if (!$adapter->hasSchema()) {
@@ -121,13 +121,13 @@ abstract class AbstractCommand extends Command
          * Migrations
          */
         if (!isset($container['phpmig.migrations'])) {
-            throw new RuntimeException($bootstrap . " must return container with array at phpmig.migrations");
+            throw new \RuntimeException($bootstrap . " must return container with array at phpmig.migrations");
         }
 
         $migrations = $container['phpmig.migrations'];
 
         if (!is_array($migrations)) {
-            throw new RuntimeException("phpmig.migrations must be an array of paths to migrations");
+            throw new \RuntimeException("phpmig.migrations must be an array of paths to migrations");
         }
 
         $versions = array();
