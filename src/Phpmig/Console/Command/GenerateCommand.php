@@ -65,6 +65,9 @@ EOT
         $path = realpath($path);
 
         $className = $input->getArgument('name');
+
+        $className = str_replace('_', ' ', $className);
+        $className = str_replace(' ', '', $className);        
         $basename  = date('YmdHis') . '_' . $className . '.php';
 
         $path = $path . DIRECTORY_SEPARATOR . $basename;
