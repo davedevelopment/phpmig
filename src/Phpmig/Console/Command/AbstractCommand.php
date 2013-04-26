@@ -78,9 +78,10 @@ abstract class AbstractCommand extends Command
 
         $locator = new FileLocator(array(
             $cwd . DIRECTORY_SEPARATOR . 'config',
+            $cwd
         ));
 
-        $bootstrap = $locator->locate($bootstrap, $cwd, $first = true);
+        $bootstrap = $locator->locate($bootstrap);
         $this->setBootstrap($bootstrap);
 
         /**
