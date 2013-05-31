@@ -120,15 +120,22 @@ abstract class AbstractCommand extends Command
         /**
          * Migrations
          */
-        if (!isset($container['phpmig.migrations'])) {
-            throw new \RuntimeException($bootstrap . " must return container with array at phpmig.migrations");
+         $isMigrationsDefined = isset($container['phpmig.migrations']) || isset($container['phpmig.migrations_path']);
+         $checkMigrationsFiles = !isset($container['phpmig.migrations']) || is_array($container['phpmig.migrations']);
+         $checkMigrationsPath = !isset($container['phpmig.migrations_path']) || is_dir($container['phpmig.migrations_path']);
+        if (!$isMigrationsDefined || !$checkMigrationsFiles || !$checkMigrationsPath ) {
+            throw new \RuntimeException($bootstrap . " must return container with array at phpmig.migrations or migrations default path at phpmig.migrations_path");
         }
-
-        $migrations = $container['phpmig.migrations'];
-
-        if (!is_array($migrations)) {
-            throw new \RuntimeException("phpmig.migrations must be an array of paths to migrations");
+        
+        $migrations = array();
+        if ( isset($container['phpmig.migrations']) ){
+            $migrations = $container['phpmig.migrations'];
         }
+        if ( isset($container['phpmig.migrations_path']) ){
+            $migrationsPath = $container['phpmig.migrations_path'];
+            $migrations = array_merge( $migrations, glob("{$migrationsPath}/*.php") );
+        }
+        $migrations = array_unique($migrations);
 
         $versions = array();
         $names = array();
