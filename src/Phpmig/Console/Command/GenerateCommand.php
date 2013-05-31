@@ -64,8 +64,8 @@ EOT
 
         $path = realpath($path);
 
-        $className = $input->getArgument('name');
-        $basename  = date('YmdHis') . '_' . $className . '.php';
+        $migrationName = $input->getArgument('name');
+        $basename  = date('YmdHis') . '_' . $migrationName . '.php';
 
         $path = $path . DIRECTORY_SEPARATOR . $basename;
 
@@ -75,6 +75,8 @@ EOT
                 $path
             ));
         }
+        
+        $className = $this->migrationToClassName($migrationName);
 
         $contents = <<<PHP
 <?php

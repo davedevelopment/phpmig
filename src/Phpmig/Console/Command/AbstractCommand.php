@@ -143,13 +143,11 @@ abstract class AbstractCommand extends Command
                 throw new \InvalidArgumentException(sprintf('Duplicate migration, "%s" has the same version as "%s"', $path, $versions[$version]));
             }
 
-            $class = preg_replace('/^[0-9]+_/', '', basename($path));
-            $class = str_replace('_', ' ', $class);
-            $class = ucwords($class);
-            $class = str_replace(' ', '', $class);
-            if (false !== strpos($class, '.')) {
-                $class = substr($class, 0, strpos($class, '.'));
+            $migrationName = preg_replace('/^[0-9]+_/', '', basename($path));
+            if (false !== strpos($migrationName, '.')) {
+                $migrationName = substr($migrationName, 0, strpos($migrationName, '.'));
             }
+            $class = $this->migrationToClassName($migrationName);
 
             if (isset($names[$class])) {
                 throw new \InvalidArgumentException(sprintf(
@@ -282,6 +280,16 @@ abstract class AbstractCommand extends Command
     public function getAdapter()
     {
         return $this->adapter;
+    }
+    
+    /**
+     * transform create_table_user to CreateTableUser
+     */
+    protected function migrationToClassName( $migrationName )
+    {
+        $class = str_replace('_', ' ', $migrationName);
+        $class = ucwords($class);
+        return str_replace(' ', '', $class);
     }
 
 }
