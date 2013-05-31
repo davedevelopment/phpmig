@@ -64,8 +64,8 @@ EOT
 
         $path = realpath($path);
 
-        $migration_name = $input->getArgument('name');
-        $basename  = date('YmdHis') . '_' . $migration_name . '.php';
+        $migrationName = $input->getArgument('name');
+        $basename  = date('YmdHis') . '_' . $migrationName . '.php';
 
         $path = $path . DIRECTORY_SEPARATOR . $basename;
 
@@ -76,14 +76,14 @@ EOT
             ));
         }
         
-        $class_name = $this->migrationToClassName($migration_name);
+        $className = $this->migrationToClassName($migrationName);
 
         $contents = <<<PHP
 <?php
 
 use Phpmig\Migration\Migration;
 
-class $class_name extends Migration
+class $className extends Migration
 {
     /**
      * Do the migration
