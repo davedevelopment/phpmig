@@ -132,8 +132,8 @@ abstract class AbstractCommand extends Command
             $migrations = $container['phpmig.migrations'];
         }
         if ( isset($container['phpmig.migrations_path']) ){
-            $migrationsPath = $container['phpmig.migrations_path'];
-            $migrations = array_merge( $migrations, glob("{$migrationsPath}/*.php") );
+            $migrationsPath = realpath($container['phpmig.migrations_path']);
+            $migrations = array_merge( $migrations, glob($migrationsPath . DIRECTORY_SEPARATOR . '*.php') );
         }
         $migrations = array_unique($migrations);
 
