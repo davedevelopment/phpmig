@@ -205,7 +205,7 @@ $container['phpmig.adapter'] = $container->share(function() use ($container) {
 });
 
 $container['phpmig.migrations_path'] = function() {
-    return __DIR__ . DIRECTORY_SEPARATOR . 'migrations/';
+    return __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
 };
 
 
@@ -261,8 +261,8 @@ To do this you can provide an array of files to the container :
 
 $container['phpmig.migrations'] = function() {
     return array_merge(
-        glob(__DIR__ . DIRECTORY_SEPARATOR . 'migrations_1/*.php'),
-        glob(__DIR__ . DIRECTORY_SEPARATOR . 'migrations_2/*.php')
+        glob('migrations_1/*.php'),
+        glob('migrations_2/*.php')
     );
 };
 

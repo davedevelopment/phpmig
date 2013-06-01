@@ -114,7 +114,7 @@ use \Phpmig\Adapter,
 });
 
 \$container['phpmig.migrations_path'] = function() {
-    return glob(__DIR__ . DIRECTORY_SEPARATOR . '$migrations/');
+    return glob(__DIR__ . DIRECTORY_SEPARATOR . 'migrations');
 };
 
 return \$container;
