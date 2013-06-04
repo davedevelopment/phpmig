@@ -22,7 +22,7 @@ ArrayAccess interface with several predefined keys. We recommend returning an
 instance of [Pimple][pimple], a simple dependency injection container (there's a
 version bundled at \Phpmig\Pimple\Pimple). This is also an ideal opportunity to
 expose your own services to the migrations themselves, which have access to the
-container. 
+container, such as a [schema management abstraction][doctrineschemamanager].
 
 Getting Started
 ---------------
@@ -350,3 +350,4 @@ anyone else is Copyright (c) 2011 Dave Marshall. See LICENCE for further details
 [behat]:http://behat.org/
 [symfony]:http://symfony.com/
 [activerecordmigrations]:http://api.rubyonrails.org/classes/ActiveRecord/Migration.html
+[doctrineschemamanager]:http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/schema-manager.html
