@@ -113,9 +113,7 @@ use \Phpmig\Adapter,
     return new Adapter\File\Flat(__DIR__ . DIRECTORY_SEPARATOR . '$migrations/.migrations.log');
 });
 
-\$container['phpmig.migrations'] = function() {
-    return glob(__DIR__ . DIRECTORY_SEPARATOR . '$migrations/*.php');
-};
+\$container['phpmig.migrations_path'] = __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
 
 return \$container;
 PHP;

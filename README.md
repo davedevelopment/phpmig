@@ -56,9 +56,9 @@ Phpmig can do a little configuring for you to get started, go to the root of you
 
 Note that you can move phpmig.php to config/phpmig.php, the commands will look first in the config directory than in the root.
 
-It can generate migrations, but you have to tell it where. Phpmig gets you to supply it with a list of migrations, so it doesn't know where to put them.  Migration files should be named versionnumber_name.php, where version number is made up of 0-9 and name is CamelCase or snake\_case. Each migration file should contain a class with the same name as the file in CamelCase.
+It can generate migrations. Migration files should be named versionnumber_name.php, where version number is made up of 0-9 and name is CamelCase or snake\_case. Each migration file should contain a class with the same name as the file in CamelCase.
 
-    $ phpmig generate AddRatingToLolCats ./migrations
+    $ phpmig generate AddRatingToLolCats
     +f ./migrations/20111018171411_AddRatingToLolCats.php
     $ phpmig status
 
@@ -105,9 +105,7 @@ $container['phpmig.adapter'] = $container->share(function() use ($container) {
     return new Adapter\PDO\Sql($container['db'], 'migrations');
 });
 
-$container['phpmig.migrations'] = function() {
-    return glob(__DIR__ . DIRECTORY_SEPARATOR . 'migrations/*.php');
-};
+$container['phpmig.migrations_path'] = __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
 
 return $container;
 
@@ -140,8 +138,8 @@ $container['phpmig.adapter'] = $container->share(function() use ($container) {
     return new Adapter\Doctrine\DBAL($container['db'], 'migrations');
 });
 
-$container['phpmig.migrations'] = function() {
-    return glob(__DIR__ . DIRECTORY_SEPARATOR . 'migrations/*.php');
+$container['phpmig.migrations_path'] = function() {
+    return __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
 };
 
 return $container;   
@@ -204,9 +202,10 @@ $container['phpmig.adapter'] = $container->share(function() use ($container) {
     return new Db($container['db'], $configuration);
 });
 
-$container['phpmig.migrations'] = function() {
-    return glob(__DIR__ . DIRECTORY_SEPARATOR . 'migrations/*.php');
+$container['phpmig.migrations_path'] = function() {
+    return __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
 };
+
 
 return $container;
 ```
@@ -246,6 +245,32 @@ class AddRatingToLolCats extends Migration
     }
 }
 ```
+
+
+Multi path migrations
+---------------------
+
+By default you have to provide the path to migrations directory.
+But you can organize your migrations script by modules and have several migrations directory.
+To do this you can provide an array of files to the container :
+
+``` php
+...
+
+$container['phpmig.migrations'] = function() {
+    return array_merge(
+        glob('migrations_1/*.php'),
+        glob('migrations_2/*.php')
+    );
+};
+
+...
+```
+
+Than you have to provide the targeted directory while you generate a migration script : 
+
+    $ phpmig generate AddRatingToLolCats ./migrations
+
 
 Rolling Back
 ------------
