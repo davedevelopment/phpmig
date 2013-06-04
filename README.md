@@ -279,8 +279,9 @@ $container['phpmig.migrations'] = function() {
 
 ```
 
-Than you have to provide the targeted directory while you generate a migration
-script : 
+You can then provide a target directory to the generate command. The target
+directory is mandatory if you haven't provided a `phpmig.migrations_path` config
+value.
 
     $ phpmig generate AddRatingToLolCats ./migrations
 
