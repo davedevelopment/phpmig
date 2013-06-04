@@ -67,7 +67,7 @@ your project and:
 Note that you can move phpmig.php to config/phpmig.php, the commands will look
 first in the config directory than in the root.
 
-It can generate migrations. Migration files should be named
+Phpmig can generate migrations using the generate command. Migration files are named
 versionnumber_name.php, where version number is made up of 0-9 and name is
 CamelCase or snake\_case. Each migration file should contain a class with the
 same name as the file in CamelCase.
@@ -79,7 +79,6 @@ same name as the file in CamelCase.
      Status   Migration ID    Migration Name 
     -----------------------------------------
        down  20111018171929  AddRatingToLolCats
-
 
 Use the migrate command to run migrations
 
