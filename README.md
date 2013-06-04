@@ -4,16 +4,25 @@ Phpmig
 What is it?
 -----------
 
-Phpmig is a (database) migration tool for php, that should be adaptable for use with most PHP 5.3+ projects. It's kind of like [doctrine migrations][doctrinemigrations], without the [doctrine][doctrine]. Although you can use doctrine if you want. And ironically, I use doctrine in my examples.
+Phpmig is a (database) migration tool for php, that should be adaptable for use
+with most PHP 5.3+ projects. It's kind of like [doctrine
+migrations][doctrinemigrations], without the [doctrine][doctrine]. Although you
+can use doctrine if you want. And ironically, I use doctrine in my examples.
 
 How does it work?
 -----------------
 
     $ phpmig migrate
 
-Phpmig aims to be vendor/framework independent, and in doing so, requires you to do a little bit of work up front to use it.
+Phpmig aims to be vendor/framework independent, and in doing so, requires you to
+do a little bit of work up front to use it.
 
-Phpmig requires a bootstrap file, that must return an object that implements the ArrayAccess interface with several predefined keys. We recommend returning an instance of [Pimple][pimple], a simple dependency injection container (there's a version bundled at \Phpmig\Pimple\Pimple). This is also an ideal opportunity to expose your own services to the migrations themselves, which have access to the container. 
+Phpmig requires a bootstrap file, that must return an object that implements the
+ArrayAccess interface with several predefined keys. We recommend returning an
+instance of [Pimple][pimple], a simple dependency injection container (there's a
+version bundled at \Phpmig\Pimple\Pimple). This is also an ideal opportunity to
+expose your own services to the migrations themselves, which have access to the
+container. 
 
 Getting Started
 ---------------
@@ -42,21 +51,27 @@ You can then use the localised version of phpmig for that project
 
     $ bin/phpmig --version
 
-The second best way to install phpmig is using pear [DEPRECATED - there will not be a PEAR distribution of 1.0]
+The second best way to install phpmig is using pear [DEPRECATED - there will not
+be a PEAR distribution of 1.0]
 
     $ sudo pear channel-discover pear.atstsolutions.co.uk
     $ sudo pear install atst/phpmig-alpha
 
-Phpmig can do a little configuring for you to get started, go to the root of your project and:
+Phpmig can do a little configuring for you to get started, go to the root of
+your project and:
 
     $ phpmig init
     +d ./migrations Place your migration files in here
     +f ./phpmig.php Create services in here
     $ 
 
-Note that you can move phpmig.php to config/phpmig.php, the commands will look first in the config directory than in the root.
+Note that you can move phpmig.php to config/phpmig.php, the commands will look
+first in the config directory than in the root.
 
-It can generate migrations. Migration files should be named versionnumber_name.php, where version number is made up of 0-9 and name is CamelCase or snake\_case. Each migration file should contain a class with the same name as the file in CamelCase.
+It can generate migrations. Migration files should be named
+versionnumber_name.php, where version number is made up of 0-9 and name is
+CamelCase or snake\_case. Each migration file should contain a class with the
+same name as the file in CamelCase.
 
     $ phpmig generate AddRatingToLolCats
     +f ./migrations/20111018171411_AddRatingToLolCats.php
@@ -250,9 +265,9 @@ class AddRatingToLolCats extends Migration
 Multi path migrations
 ---------------------
 
-By default you have to provide the path to migrations directory.
-But you can organize your migrations script by modules and have several migrations directory.
-To do this you can provide an array of files to the container :
+By default you have to provide the path to migrations directory.  But you can
+organize your migrations script by modules and have several migrations
+directory.  To do this you can provide an array of files to the container :
 
 ``` php
 ...
@@ -267,7 +282,8 @@ $container['phpmig.migrations'] = function() {
 ...
 ```
 
-Than you have to provide the targeted directory while you generate a migration script : 
+Than you have to provide the targeted directory while you generate a migration
+script : 
 
     $ phpmig generate AddRatingToLolCats ./migrations
 
@@ -279,7 +295,8 @@ You can roll back the last run migration by using the rollback command
 
     $ phpmig rollback
 
-To rollback all migration up to a specific migration you can specify the rollback target
+To rollback all migration up to a specific migration you can specify the
+rollback target
 
     $ phpmig rollback -t 20111101000144
 
@@ -298,27 +315,35 @@ You can also rollback only a specific migration using the down command
 Todo
 ----
 
-* Some sort of migration manager, that will take some of the logic out of the commands for calculating which migrations have been run, which need running etc
+* Some sort of migration manager, that will take some of the logic out of the
+  commands for calculating which migrations have been run, which need running
+  etc
 * Adapters for Zend\_Db and/or Zend\_Db\_Table and others?
 * Redo and rollback commands
 * Tests!
 * Configuration? 
-* Someway of protecting against class definition clashes with regard to the symfony dependencies and the user supplied bootstrap?
+* Someway of protecting against class definition clashes with regard to the
+  symfony dependencies and the user supplied bootstrap?
 
 Contributing
 ------------
 
-Feel free to fork and send me pull requests, but I don't have a 1.0 release yet, so I may change the API quite frequently. If you want to implement something that I might easily break, please drop me an email
+Feel free to fork and send me pull requests, but I don't have a 1.0 release yet,
+so I may change the API quite frequently. If you want to implement something
+that I might easily break, please drop me an email
 
 Inspiration
 -----------
 
-I basically started copying [ActiveRecord::Migrations][activerecordmigrations] in terms of the migration features, the bootstrapping was my own idea, the layout of the code was inspired by [Symfony][symfony] and [Behat][behat]
+I basically started copying [ActiveRecord::Migrations][activerecordmigrations]
+in terms of the migration features, the bootstrapping was my own idea, the
+layout of the code was inspired by [Symfony][symfony] and [Behat][behat]
 
 Copyright
 ---------
 
-[Pimple][pimple] is copyright Fabien Potencier. Everything I haven't copied from anyone else is Copyright (c) 2011 Dave Marshall. See LICENCE for further details
+[Pimple][pimple] is copyright Fabien Potencier. Everything I haven't copied from
+anyone else is Copyright (c) 2011 Dave Marshall. See LICENCE for further details
 
 
 [pimple]:https://github.com/fabpot/Pimple
