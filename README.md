@@ -105,9 +105,7 @@ $container['phpmig.adapter'] = $container->share(function() use ($container) {
     return new Adapter\PDO\Sql($container['db'], 'migrations');
 });
 
-$container['phpmig.migrations_path'] = function() {
-    return __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
-};
+$container['phpmig.migrations_path'] = __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
 
 return $container;
 
