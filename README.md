@@ -44,8 +44,7 @@ The best way to install phpmig is using composer. Start by creating or adding to
 
 Then download composer.phar and run install command
 
-    $ wget http://getcomposer.org/composer.phar
-    $ php composer.phar install
+    $ curl -sS https://getcomposer.org/installer | php
 
 You can then use the localised version of phpmig for that project
 
