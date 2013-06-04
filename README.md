@@ -56,7 +56,7 @@ Phpmig can do a little configuring for you to get started, go to the root of you
 
 Note that you can move phpmig.php to config/phpmig.php, the commands will look first in the config directory than in the root.
 
-It can generate migrations, but you have to tell it where. Phpmig gets you to supply it with a list of migrations, so it doesn't know where to put them.  Migration files should be named versionnumber_name.php, where version number is made up of 0-9 and name is CamelCase or snake\_case. Each migration file should contain a class with the same name as the file in CamelCase.
+It can generate migrations. Migration files should be named versionnumber_name.php, where version number is made up of 0-9 and name is CamelCase or snake\_case. Each migration file should contain a class with the same name as the file in CamelCase.
 
     $ phpmig generate AddRatingToLolCats
     +f ./migrations/20111018171411_AddRatingToLolCats.php
@@ -253,7 +253,7 @@ Multi path migrations
 ---------------------
 
 By default you have to provide the path to migrations directory.
-But you can organize your migrations script by modules and have severam migrations directory.
+But you can organize your migrations script by modules and have several migrations directory.
 To do this you can provide an array of files to the container :
 
 ``` php
