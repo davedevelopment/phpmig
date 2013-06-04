@@ -264,12 +264,12 @@ class AddRatingToLolCats extends Migration
 Multi path migrations
 ---------------------
 
-By default you have to provide the path to migrations directory.  But you can
-organize your migrations script by modules and have several migrations
-directory.  To do this you can provide an array of files to the container :
+By default you have to provide the path to migrations directory, but you can
+organize your migrations script however you like and have several migrations
+directory.  To do this you can provide an array of migration file paths to the
+container :
 
 ``` php
-...
 
 $container['phpmig.migrations'] = function() {
     return array_merge(
@@ -278,7 +278,6 @@ $container['phpmig.migrations'] = function() {
     );
 };
 
-...
 ```
 
 Than you have to provide the targeted directory while you generate a migration
