@@ -35,7 +35,7 @@ class GenerateCommand extends AbstractCommand
 
         $this->setName('generate')
              ->addArgument('name', InputArgument::REQUIRED, 'The name for the migration')
-             ->addArgument('path', InputArgument::REQUIRED, 'The directory in which to put the migration')
+             ->addArgument('path', InputArgument::OPTIONAL, 'The directory in which to put the migration ( optional if phpmig.migrations_path is setted )')
              ->setDescription('Generate a new migration')
              ->setHelp(<<<EOT
 The <info>generate</info> command creates a new migration with the name and path specified 
@@ -51,7 +51,13 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        
+        $this->bootstrap($input, $output);
+        
         $path    = $input->getArgument('path');
+        if( null === $path ){
+            $path = $this->container['phpmig.migrations_path'];
+        }
         $locator = new FileLocator(array());
         $path    = $locator->locate($path, getcwd(), $first = true);
 
