@@ -18,7 +18,7 @@ use Phpmig\Adapter\AdapterInterface,
  */
 
 /**
- * Migrator 
+ * Migrator
  *
  * Decided what to migrate and migrates
  *
@@ -37,7 +37,7 @@ class Migrator
     protected $adapter = null;
 
     /**
-     * @var OutputInterface 
+     * @var OutputInterface
      */
     protected $output = null;
 
@@ -91,23 +91,24 @@ class Migrator
         $this->getOutput()->writeln(sprintf(
             ' == <info>' .
             $migration->getVersion() . ' ' .
-            $migration->getName() . '</info> ' . 
-            '<comment>' . 
-            ($direction == 'up' ? 'migrating' : 'reverting') . 
+            $migration->getName() . '</info> ' .
+            '<comment>' .
+            ($direction == 'up' ? 'migrating' : 'reverting') .
             '</comment>'
         ));
         $start = microtime(1);
         $migration->setContainer($this->getContainer());
+        $migration->init();
         $migration->{$direction}();
         $this->getAdapter()->{$direction}($migration);
         $end = microtime(1);
         $this->getOutput()->writeln(sprintf(
             ' == <info>' .
             $migration->getVersion() . ' ' .
-            $migration->getName() . '</info> ' . 
-            '<comment>' . 
-            ($direction == 'up' ? 'migrated ' : 'reverted ') . 
-            sprintf("%.4fs", $end - $start) . 
+            $migration->getName() . '</info> ' .
+            '<comment>' .
+            ($direction == 'up' ? 'migrated ' : 'reverted ') .
+            sprintf("%.4fs", $end - $start) .
             '</comment>'
         ));
     }
@@ -147,7 +148,7 @@ class Migrator
     /**
      * Set Adapter
      *
-     * @param AdapterInterface $adapter 
+     * @param AdapterInterface $adapter
      * @return Migrator
      */
     public function setAdapter(AdapterInterface $adapter)
@@ -169,7 +170,7 @@ class Migrator
     /**
      * Set Output
      *
-     * @param OutputInterface $output 
+     * @param OutputInterface $output
      * @return Migrator
      */
     public function setOutput(OutputInterface $output)

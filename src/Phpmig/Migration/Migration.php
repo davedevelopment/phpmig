@@ -49,7 +49,6 @@ class Migration
     final public function __construct($version)
     {
         $this->version = $version;
-        $this->init();
     }
 
     /**
@@ -57,7 +56,7 @@ class Migration
      *
      * @return void
      */
-    protected function init()
+    public function init()
     {
         return;
     }
@@ -67,7 +66,7 @@ class Migration
      *
      * @return void
      */
-    public function up() 
+    public function up()
     {
         return;
     }
@@ -149,7 +148,7 @@ class Migration
     /**
      * Set Output
      *
-     * @param OutputInterface $output 
+     * @param OutputInterface $output
      * @return Migrator
      */
     public function setOutput(OutputInterface $output)
@@ -168,7 +167,7 @@ class Migration
     public function ask($question, $default = null)
     {
         return $this->getDialogHelper()->ask($this->getOutput(), $question, $default);
-    } 
+    }
 
     /**
      * Ask for confirmation
@@ -180,7 +179,7 @@ class Migration
     public function confirm($question, $default = true)
     {
         return $this->getDialogHelper()->askConfirmation($this->getOutput(), $question, $default);
-    } 
+    }
 
     /**
      * Get something from the container
