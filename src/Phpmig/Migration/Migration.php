@@ -42,6 +42,11 @@ class Migration
     protected $output = null;
 
     /**
+     * @var DialogHelper
+     */
+    protected $dialogHelper = null;
+
+    /**
      * Constructor
      *
      * @param int $version
