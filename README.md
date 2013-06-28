@@ -19,10 +19,10 @@ do a little bit of work up front to use it.
 
 Phpmig requires a bootstrap file, that must return an object that implements the
 ArrayAccess interface with several predefined keys. We recommend returning an
-instance of [Pimple][pimple], a simple dependency injection container (there's a
-version bundled at \Phpmig\Pimple\Pimple). This is also an ideal opportunity to
-expose your own services to the migrations themselves, which have access to the
-container, such as a [schema management abstraction][doctrineschemamanager].
+instance of [Pimple][pimple], a simple dependency injection container. This is
+also an ideal opportunity to expose your own services to the migrations
+themselves, which have access to the container, such as a [schema management
+abstraction][doctrineschemamanager].
 
 Getting Started
 ---------------
@@ -100,7 +100,7 @@ provided adapters to store this information in your database.
 # phpmig.php
 
 use \Phpmig\Adapter,
-    \Pimple\Pimple;
+    \Pimple;
 
 $container = new Pimple();
 
@@ -129,7 +129,7 @@ Or you can use Doctrine's DBAL:
 // do some autoloading of Doctrine here
 
 use \Phpmig\Adapter,
-    \Pimple\Pimple, // if you used composer, use Pimple\Pimple!
+    \Pimple, 
     \Doctrine\DBAL\DriverManager;
 
 $container = new Pimple();
@@ -184,7 +184,7 @@ require_once 'Zend/Loader/Autoloader.php';
 $autoloader = Zend_Loader_Autoloader::getInstance();
 $autoloader->registerNamespace('Zend_');
 
-use \Phpmig\Pimple\Pimple,
+use \Pimple,
     \Phpmig\Adapter\Zend\Db;
 
 $container = new Pimple();

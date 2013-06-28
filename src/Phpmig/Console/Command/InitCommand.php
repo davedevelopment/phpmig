@@ -104,7 +104,7 @@ EOT
 <?php
 
 use \Phpmig\Adapter,
-    \Phpmig\Pimple\Pimple;
+    \Pimple;
 
 \$container = new Pimple();
 
