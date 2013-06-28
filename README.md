@@ -50,12 +50,6 @@ You can then use the localised version of phpmig for that project
 
     $ bin/phpmig --version
 
-The second best way to install phpmig is using pear [DEPRECATED - there will not
-be a PEAR distribution of 1.0]
-
-    $ sudo pear channel-discover pear.atstsolutions.co.uk
-    $ sudo pear install atst/phpmig-alpha
-
 Phpmig can do a little configuring for you to get started, go to the root of
 your project and:
 
