@@ -43,6 +43,7 @@ class PhpmigApplication extends Application
         $this->addCommands(array(
             new Command\InitCommand(),
             new Command\StatusCommand(),
+            new Command\CheckCommand(),
             new Command\GenerateCommand(),
             new Command\UpCommand(),
             new Command\DownCommand(),
