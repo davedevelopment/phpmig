@@ -103,25 +103,20 @@ EOT
         $contents = <<<PHP
 <?php
 
-use \Phpmig\Adapter,
-    \Pimple;
+use \Phpmig\Adapter;
 
-\$container = new Pimple();
+\$container = new ArrayObject();
 
-\$container['phpmig.adapter'] = \$container->share(function() {
-    // replace this with a better Phpmig\Adapter\AdapterInterface 
-    return new Adapter\File\Flat(__DIR__ . DIRECTORY_SEPARATOR . '$migrations/.migrations.log');
-});
+// replace this with a better Phpmig\Adapter\AdapterInterface 
+\$container['phpmig.adapter'] = new Adapter\File\Flat(__DIR__ . DIRECTORY_SEPARATOR . '$migrations/.migrations.log');
 
 \$container['phpmig.migrations_path'] = __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
 
 // You can also provide an array of migration files
-// \$container['phpmig.migrations'] = function() {
-//     return array_merge(
-//         glob('migrations_1/*.php'),
-//         glob('migrations_2/*.php')
-//     );
-// };
+// \$container['phpmig.migrations'] = array_merge(
+//     glob('migrations_1/*.php'),
+//     glob('migrations_2/*.php')
+// );
 
 return \$container;
 PHP;
