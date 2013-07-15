@@ -26,7 +26,7 @@
         "mockery/mockery": "*@dev"
     },
     "suggest": {
-        "pimple/pimple": "Pimple allows to bootstrap phpmig really simple."
+        "pimple/pimple": "Pimple allows to bootstrap phpmig really easily."
     },
     "autoload": {
         "psr-0": {
