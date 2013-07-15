@@ -6,6 +6,9 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 
+/**
+ * @group unit
+ */
 class InitCommandTest extends \PHPUnit_Framework_TestCase
 {
     /** @var string */
