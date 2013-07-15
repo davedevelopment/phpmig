@@ -36,7 +36,7 @@ abstract class AbstractCommand extends Command
     protected $container = null;
 
     /**
-     * @var \Phpmig\Adapter\AdapterInterface
+     * @var AdapterInterface
      */
     protected $adapter = null;
 
@@ -238,12 +238,7 @@ abstract class AbstractCommand extends Command
      */
     protected function bootstrapMigrator(OutputInterface $output)
     {
-        $container = $this->getContainer();
-        $adapter = $this->getAdapter();
-
-        return $this->getContainer()->share(function() use ($container, $adapter, $output) {
-            return new Migrator($adapter, $container, $output);
-        });
+        return new Migrator($this->getAdapter(), $this->getContainer(), $output);
     }
 
     /**
