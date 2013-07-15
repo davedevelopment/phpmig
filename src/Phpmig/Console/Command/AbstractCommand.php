@@ -65,13 +65,25 @@ abstract class AbstractCommand extends Command
      */
     protected function bootstrap(InputInterface $input, OutputInterface $output)
     {
-        /**
-         * Bootstrap
-         */
-        $bootstrap = $input->getOption('bootstrap');
+        $this->setBootstrap($this->findBootstrapFile($input->getOption('bootstrap')));
 
-        if (null === $bootstrap) {
-            $bootstrap = 'phpmig.php';
+        $this->setContainer($this->bootstrapContainer());
+        $this->setAdapter($this->bootstrapAdapter());
+
+        $this->setMigrations($this->bootstrapMigrations($output));
+
+        $container['phpmig.migrator'] = $this->bootstrapMigrator($output);
+
+    }
+
+    /**
+     * @param string $filename
+     * @return array|string
+     */
+    protected function findBootstrapFile($filename)
+    {
+        if (null === $filename) {
+            $filename = 'phpmig.php';
         }
 
         $cwd = getcwd();
@@ -81,65 +93,91 @@ abstract class AbstractCommand extends Command
             $cwd
         ));
 
-        $bootstrap = $locator->locate($bootstrap);
-        $this->setBootstrap($bootstrap);
+        return $locator->locate($filename);
+    }
 
-        /**
-         * Prevent scope clashes
-         */
-        $func = function() use ($bootstrap) {
-            return require $bootstrap;
+    /**
+     * @return \ArrayAccess The container
+     * @throws \RuntimeException
+     */
+    protected function bootstrapContainer()
+    {
+        $bootstrapFile = $this->getBootstrap();
+
+        $func = function () use ($bootstrapFile) {
+            return require $bootstrapFile;
         };
 
         $container = $func();
 
         if (!($container instanceof \ArrayAccess)) {
-            throw new \RuntimeException($bootstrap . " must return object of type \ArrayAccess");
+            throw new \RuntimeException($bootstrapFile . " must return object of type \ArrayAccess");
         }
-        $this->setContainer($container);
 
-        /**
-         * Adapter
-         */
+        return $container;
+    }
+
+    /**
+     * @return AdapterInterface
+     * @throws \RuntimeException
+     */
+    protected function bootstrapAdapter()
+    {
+        $container = $this->getContainer();
+
         if (!isset($container['phpmig.adapter'])) {
-            throw new \RuntimeException($bootstrap . " must return container with service at phpmig.adapter");
+            throw new \RuntimeException(
+                $this->getBootstrap() . " must return container with service at phpmig.adapter"
+            );
         }
 
         $adapter = $container['phpmig.adapter'];
 
-        if (!($adapter instanceof \Phpmig\Adapter\AdapterInterface)) {
-            throw new \RuntimeException("phpmig.adapter must be an instance of \Phpmig\Adapter\AdapterInterface");
+        if (!($adapter instanceof AdapterInterface)) {
+            throw new \RuntimeException("phpmig.adapter must be an instance of \\Phpmig\\Adapter\\AdapterInterface");
         }
 
         if (!$adapter->hasSchema()) {
             $adapter->createSchema();
         }
 
-        $this->setAdapter($adapter);
+        return $adapter;
+    }
 
-        /**
-         * Migrations
-         */
-         $isMigrationsDefined = isset($container['phpmig.migrations']) || isset($container['phpmig.migrations_path']);
-         $checkMigrationsFiles = !isset($container['phpmig.migrations']) || is_array($container['phpmig.migrations']);
-         $checkMigrationsPath = !isset($container['phpmig.migrations_path']) || is_dir($container['phpmig.migrations_path']);
-        if (!$isMigrationsDefined || !$checkMigrationsFiles || !$checkMigrationsPath ) {
-            throw new \RuntimeException($bootstrap . " must return container with array at phpmig.migrations or migrations default path at phpmig.migrations_path");
+    /**
+     * @param OutputInterface $output
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     */
+    protected function bootstrapMigrations(OutputInterface $output)
+    {
+        $container = $this->getContainer();
+
+        $migrationsConfigured = isset($container['phpmig.migrations']) || isset($container['phpmig.migrations_path']);
+        $validMigrationFiles = !isset($container['phpmig.migrations']) || is_array($container['phpmig.migrations']);
+        $validMigrationPath = !isset($container['phpmig.migrations_path']) || is_dir($container['phpmig.migrations_path']);
+
+        if (!$migrationsConfigured || !$validMigrationFiles || !$validMigrationPath) {
+            throw new \RuntimeException(
+                $this->getBootstrap()
+                . ' must return container with array at phpmig.migrations or migrations default path at '
+                . 'phpmig.migrations_path'
+            );
         }
-        
+
         $migrations = array();
-        if ( isset($container['phpmig.migrations']) ){
+        if (isset($container['phpmig.migrations'])) {
             $migrations = $container['phpmig.migrations'];
         }
-        if ( isset($container['phpmig.migrations_path']) ){
+        if (isset($container['phpmig.migrations_path'])) {
             $migrationsPath = realpath($container['phpmig.migrations_path']);
-            $migrations = array_merge( $migrations, glob($migrationsPath . DIRECTORY_SEPARATOR . '*.php') );
+            $migrations = array_merge($migrations, glob($migrationsPath . DIRECTORY_SEPARATOR . '*.php'));
         }
         $migrations = array_unique($migrations);
 
         $versions = array();
         $names = array();
-        foreach($migrations as $path) {
+        foreach ($migrations as $path) {
             if (!preg_match('/^[0-9]+/', basename($path), $matches)) {
                 throw new \InvalidArgumentException(sprintf('The file "%s" does not have a valid migration filename', $path));
             }
@@ -158,7 +196,7 @@ abstract class AbstractCommand extends Command
 
             if (isset($names[$class])) {
                 throw new \InvalidArgumentException(sprintf(
-                    'Migration "%s" has the same name as "%s"', 
+                    'Migration "%s" has the same name as "%s"',
                     $path,
                     $names[$class]
                 ));
@@ -168,7 +206,7 @@ abstract class AbstractCommand extends Command
             require_once $path;
             if (!class_exists($class)) {
                 throw new \InvalidArgumentException(sprintf(
-                    'Could not find class "%s" in file "%s"', 
+                    'Could not find class "%s" in file "%s"',
                     $class,
                     $path
                 ));
@@ -191,14 +229,21 @@ abstract class AbstractCommand extends Command
 
         ksort($versions);
 
-        /**
-         * Setup migrator
-         */
-        $container['phpmig.migrator'] = $container->share(function() use ($container, $adapter, $output) {
+        return $versions;
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @return mixed
+     */
+    protected function bootstrapMigrator(OutputInterface $output)
+    {
+        $container = $this->getContainer();
+        $adapter = $this->getAdapter();
+
+        return $this->getContainer()->share(function() use ($container, $adapter, $output) {
             return new Migrator($adapter, $container, $output);
         });
-
-        $this->setMigrations($versions);
     }
 
     /**
@@ -260,7 +305,7 @@ abstract class AbstractCommand extends Command
     /**
      * Get container
      *
-     * @return \ArrayAccess
+     * @return \ArrayAccess|\Pimple
      */
     public function getContainer()
     {
@@ -298,7 +343,6 @@ abstract class AbstractCommand extends Command
         $class = ucwords($class);
         return str_replace(' ', '', $class);
     }
-
 }
 
 
