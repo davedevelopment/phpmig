@@ -5,14 +5,14 @@
  */
 namespace Phpmig\Console\Command;
 
-use Symfony\Component\Console\Command\Command,
-    Symfony\Component\Console\Input\InputInterface,
-    Symfony\Component\Console\Input\InputArgument,
-    Symfony\Component\Console\Output\OutputInterface,
-    Symfony\Component\Config\FileLocator,
-    Phpmig\Migration\Migration,
-    Phpmig\Migration\Migrator,
-    Phpmig\Adapter\AdapterInterface;
+use Phpmig\Adapter\AdapterInterface;
+use Phpmig\Migration\Migration;
+use Phpmig\Migration\Migrator;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * This file is part of phpmig
@@ -55,7 +55,7 @@ abstract class AbstractCommand extends Command
      */
     protected function configure()
     {
-        $this->addOption('--bootstrap', '-b', InputArgument::OPTIONAL, 'The bootstrap file to load');
+        $this->addOption('--bootstrap', '-b', InputOption::VALUE_REQUIRED, 'The bootstrap file to load');
     }
 
     /**
