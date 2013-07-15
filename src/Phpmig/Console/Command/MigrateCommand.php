@@ -73,7 +73,13 @@ EOT
                 return;
             }
         } else {
-            $version = max(array_merge($versions, array_keys($migrations)));
+            $versionNumbers = array_merge($versions, array_keys($migrations));
+
+            if (empty($versionNumbers)) {
+                return;
+            }
+
+            $version = max($versionNumbers);
         }
 
         $direction = $version > $current ? 'up' : 'down';
