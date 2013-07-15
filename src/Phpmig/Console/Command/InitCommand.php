@@ -5,8 +5,8 @@
  */
 namespace Phpmig\Console\Command;
 
-use Symfony\Component\Console\Input\InputInterface,
-    Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * This file is part of phpmig
@@ -80,7 +80,6 @@ EOT
             str_replace(getcwd(), '.', $migrations) . 
             ' <comment>Place your migration files in here</comment>'
         );
-        return;
     }
 
     /**
@@ -97,7 +96,7 @@ EOT
         }
 
         if (!is_writeable(dirname($bootstrap))) {
-            throw new \RuntimeException(sprintf('THe file "%s" is not writeable', $bootstrap));
+            throw new \RuntimeException(sprintf('The file "%s" is not writeable', $bootstrap));
         }
 
         $contents = <<<PHP
@@ -122,7 +121,7 @@ return \$container;
 PHP;
 
         if (false === file_put_contents($bootstrap, $contents)) {
-            throw new \RuntimeException('THe file "%s" could not be written to', $bootstrap);
+            throw new \RuntimeException('The file "%s" could not be written to', $bootstrap);
         }
 
         $output->writeln(
