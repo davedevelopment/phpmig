@@ -65,6 +65,21 @@ class InitCommandTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(file_exists($tempDir . DIRECTORY_SEPARATOR . 'phpmig.php'));
     }
 
+    public function testExecuteBootstrapFileExists()
+    {
+        $command = $this->createCommand();
+        $tester = $this->createCommandTester($command);
+
+        $tempDir = $this->getTempDir();
+        chdir($tempDir);
+
+        touch($tempDir . DIRECTORY_SEPARATOR . 'phpmig.php');
+
+        $tester->execute(array('command' => $command->getName()));
+
+        $this->assertContains('phpmig.php already exists', $tester->getDisplay());
+    }
+
     /**
      * @return Application
      */

@@ -46,7 +46,7 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $cwd = getcwd();
-        $bootstrap = $cwd . DIRECTORY_SEPARATOR . 'phpmig.php'; 
+        $bootstrap = $cwd . DIRECTORY_SEPARATOR . 'phpmig.php';
         $relative = 'migrations';
         $migrations = $cwd . DIRECTORY_SEPARATOR . $relative;
 
@@ -77,7 +77,7 @@ EOT
 
         $output->writeln(
             '<info>+d</info> ' .
-            str_replace(getcwd(), '.', $migrations) . 
+            str_replace(getcwd(), '.', $migrations) .
             ' <comment>Place your migration files in here</comment>'
         );
     }
@@ -92,7 +92,12 @@ EOT
     protected function initBootstrap($bootstrap, $migrations, OutputInterface $output)
     {
         if (file_exists($bootstrap)) {
-            throw new \RuntimeException(sprintf('The file "%s" already exists', $bootstrap));
+            $output->writeln(
+                '<info>--</info> ' .
+                str_replace(getcwd(), '.', $bootstrap) . ' already exists -' .
+                ' <comment>Create services in here</comment>'
+            );
+            return;
         }
 
         if (!is_writeable(dirname($bootstrap))) {
@@ -106,7 +111,7 @@ use \Phpmig\Adapter;
 
 \$container = new ArrayObject();
 
-// replace this with a better Phpmig\Adapter\AdapterInterface 
+// replace this with a better Phpmig\Adapter\AdapterInterface
 \$container['phpmig.adapter'] = new Adapter\File\Flat(__DIR__ . DIRECTORY_SEPARATOR . '$migrations/.migrations.log');
 
 \$container['phpmig.migrations_path'] = __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
@@ -126,10 +131,9 @@ PHP;
 
         $output->writeln(
             '<info>+f</info> ' .
-            str_replace(getcwd(), '.', $bootstrap) . 
+            str_replace(getcwd(), '.', $bootstrap) .
             ' <comment>Create services in here</comment>'
         );
-        return;
     }
 }
 
