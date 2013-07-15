@@ -300,7 +300,7 @@ abstract class AbstractCommand extends Command
     /**
      * Get container
      *
-     * @return \ArrayAccess|\Pimple
+     * @return \ArrayAccess
      */
     public function getContainer()
     {
