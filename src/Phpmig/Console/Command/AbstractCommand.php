@@ -67,7 +67,8 @@ abstract class AbstractCommand extends Command
     {
         $this->setBootstrap($this->findBootstrapFile($input->getOption('bootstrap')));
 
-        $this->setContainer($this->bootstrapContainer());
+        $container = $this->bootstrapContainer();
+        $this->setContainer($container);
         $this->setAdapter($this->bootstrapAdapter());
 
         $this->setMigrations($this->bootstrapMigrations($output));
