@@ -5,13 +5,10 @@
  */
 namespace Phpmig\Console;
 
-use Symfony\Component\Console\Application,
-    Symfony\Component\Console\Input\InputOption,
-    Symfony\Component\Console\Input\InputInterface,
-    Symfony\Component\Console\Output\OutputInterface,
-    Symfony\Component\Yaml\Yaml,
-    Symfony\Component\Config\FileLocator,
-    Phpmig\Console\Command;
+use Phpmig\Console\Command;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * This file is part of phpmig
@@ -30,14 +27,10 @@ use Symfony\Component\Console\Application,
 class PhpmigApplication extends Application
 {
     /**
-     * @var \ArrayAccess
+     * @param string $version
      */
-    protected $container = null;
-
-    /**
-     * Constructor
-     */
-    public function __construct($version = 'dev') {
+    public function __construct($version = 'dev')
+    {
         parent::__construct('phpmig', $version);
 
         $this->addCommands(array(
@@ -51,21 +44,5 @@ class PhpmigApplication extends Application
             new Command\RollbackCommand(),
         ));
     }
-
-    /**
-     * Runs the current application.
-     *
-     * Lots of logic in here that needs abstracting out.
-     *
-     * @param InputInterface  $input  An Input instance
-     * @param OutputInterface $output An Output instance
-     *
-     * @return integer 0 if everything went fine, or an error code
-     */
-    public function doRun(InputInterface $input, OutputInterface $output)
-    {
-        return parent::doRun($input, $output);
-    }
-
 }
 
