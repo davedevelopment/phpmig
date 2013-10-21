@@ -57,7 +57,7 @@ class DBAL implements AdapterInterface
     public function fetchAll()
     {
         $tableName = $this->connection->quoteIdentifier($this->tableName);
-        $sql = "SELECT `version` FROM $tableName ORDER BY `version` ASC";
+        $sql = "SELECT version FROM $tableName ORDER BY version ASC";
         $all = $this->connection->fetchAll($sql);
         return array_map(function($v) {return $v['version'];}, $all);
     }
