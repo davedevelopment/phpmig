@@ -108,7 +108,9 @@ use \Phpmig\Adapter,
 $container = new Pimple();
 
 $container['db'] = $container->share(function() {
-    return new PDO('mysql:dbname=testdb;host=127.0.0.1','username','passwd');
+    $dbh = new PDO('mysql:dbname=testdb;host=127.0.0.1','username','passwd');
+ 	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+ 	return $dbh;
 });
 
 $container['phpmig.adapter'] = $container->share(function() use ($container) {
