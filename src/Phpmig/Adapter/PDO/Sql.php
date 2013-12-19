@@ -57,7 +57,7 @@ class Sql implements AdapterInterface
     {
         // get the appropriate query
         //
-        $sql = $this->queries['fetchAll'];
+        $sql = $this->getQuery('fetchAll');
 
         // return the results of the query
         //
@@ -74,7 +74,7 @@ class Sql implements AdapterInterface
     {
         // get the appropriate query
         //
-        $sql = $this->queries['up'];
+        $sql = $this->getQuery('up');
 
         // prepare and execute the query
         //
@@ -94,7 +94,7 @@ class Sql implements AdapterInterface
     {
         // get the appropriate query
         //
-        $sql = $this->queries['down'];
+        $sql = $this->getQuery('down');
 
         // prepare and execute the query
         //
@@ -114,7 +114,7 @@ class Sql implements AdapterInterface
     {
         // get the appropriate query
         //
-        $sql = $this->queries['hasSchema'];
+        $sql = $this->getQuery('hasSchema');
 
         // get the list of tables
         //
@@ -146,7 +146,7 @@ class Sql implements AdapterInterface
     {
         // get the appropriate query
         //
-        $sql = $this->queries['createSchema'];
+        $sql = $this->getQuery('createSchema');
 
         // execute the query
         //
