@@ -24,7 +24,10 @@ class Sql implements AdapterInterface
      */
     protected $tableName = null;
 
-
+    /**
+     * @var string
+     */
+    protected $pdoDriverName = null;
 
     /**
      * Constructor
