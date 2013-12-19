@@ -169,52 +169,55 @@ class Sql implements AdapterInterface
      *
      * @return mixed
      */
-    public function __get($name)
+    protected function getQuery($type)
     {
-        // is this a request for the "queries" array? if so, return the
-        // appropriate list
+        // the list of queries
         //
-        if($name==='queries')
+        $queries = array();
+
+        switch($this->pdoDriverName)
         {
-            switch($this->pdoDriverName)
-            {
-                case 'sqlite':
-                    return array(
+            case 'sqlite':
+                $queries = array(
 
-                            'fetchAll'     => "SELECT `version` FROM {$this->quotedTableName()} ORDER BY `version` ASC",
+                        'fetchAll'     => "SELECT `version` FROM {$this->quotedTableName()} ORDER BY `version` ASC",
 
-                            'up'           => "INSERT INTO {$this->quotedTableName()} VALUES (:version);",
+                        'up'           => "INSERT INTO {$this->quotedTableName()} VALUES (:version);",
 
-                            'down'         => "DELETE FROM {$this->quotedTableName()} WHERE version = :version",
+                        'down'         => "DELETE FROM {$this->quotedTableName()} WHERE version = :version",
 
-                            'hasSchema'    => "SELECT `name` FROM `sqlite_master` WHERE `type`='table';",
+                        'hasSchema'    => "SELECT `name` FROM `sqlite_master` WHERE `type`='table';",
 
-                            'createSchema' => "CREATE table {$this->quotedTableName()} (`version` NOT NULL);",
+                        'createSchema' => "CREATE table {$this->quotedTableName()} (`version` NOT NULL);",
 
-                        );
+                    );
 
-                case 'mysql':
-                case 'pgsql':
-                default:
-                    return array(
+            case 'mysql':
+            case 'pgsql':
+            default:
+                $queries = array(
 
-                            'fetchAll'     => "SELECT `version` FROM {$this->quotedTableName()} ORDER BY `version` ASC",
+                        'fetchAll'     => "SELECT `version` FROM {$this->quotedTableName()} ORDER BY `version` ASC",
 
-                            'up'           => "INSERT into {$this->quotedTableName()} set version = :version",
+                        'up'           => "INSERT into {$this->quotedTableName()} set version = :version",
 
-                            'down'         => "DELETE from {$this->quotedTableName()} where version = :version",
+                        'down'         => "DELETE from {$this->quotedTableName()} where version = :version",
 
-                            'hasSchema'    => "SHOW TABLES;",
+                        'hasSchema'    => "SHOW TABLES;",
 
-                            'createSchema' => "CREATE TABLE {$this->quotedTableName()} (`version` VARCHAR(255) NOT NULL);",
+                        'createSchema' => "CREATE TABLE {$this->quotedTableName()} (`version` VARCHAR(255) NOT NULL);",
 
-                        );
-            }
+                    );
         }
+
+        // is the type listed in the queries array? if not, thrown an exception
+        //
+        if(!array_key_exists($type, $queries))
+            throw new \InvalidArgumentException("Query type not found: '{$type}'");
 
         // it's a request for something else. Let the parent class handle it
         //
-        return parent::__get($name);
+        return $queries[$type];
     }
 }
 
