@@ -189,6 +189,7 @@ class Sql implements AdapterInterface
                         'createSchema' => "CREATE table {$this->quotedTableName()} (`version` NOT NULL);",
 
                     );
+                break;
 
             case 'mysql':
             case 'pgsql':
@@ -206,6 +207,7 @@ class Sql implements AdapterInterface
                         'createSchema' => "CREATE TABLE {$this->quotedTableName()} (`version` VARCHAR(255) NOT NULL);",
 
                     );
+                break;
         }
 
         // is the type listed in the queries array? if not, thrown an exception
