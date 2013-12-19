@@ -80,6 +80,7 @@ class Sql implements AdapterInterface
         //
         $this->connection->prepare($sql)
                 ->execute(array(':version' => $migration->getVersion()));
+
         return $this;
     }
 
@@ -99,6 +100,7 @@ class Sql implements AdapterInterface
         //
         $this->connection->prepare($sql)
                 ->execute(array(':version' => $migration->getVersion()));
+
         return $this;
     }
 
@@ -121,6 +123,7 @@ class Sql implements AdapterInterface
                 return true;
             }
         }
+
         // we made it all the way through the list of tables without finding the
         // one we're looking for. Return false.
         //
@@ -142,6 +145,7 @@ class Sql implements AdapterInterface
         // execute the query
         //
         $this->connection->exec($sql);
+
         return $this;
     }
 
