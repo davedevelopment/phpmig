@@ -116,6 +116,10 @@ class Sql implements AdapterInterface
         //
         $sql = $this->queries['hasSchema'];
 
+        // get the list of tables
+        //
+        $tables = $this->connection->query($sql);
+
         // loop through the list of tables
         //
         while($table = $tables->fetchColumn()) {
