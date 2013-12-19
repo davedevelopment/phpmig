@@ -1,6 +1,9 @@
 Phpmig
 ======
 
+[![Build
+Status](https://travis-ci.org/davedevelopment/phpmig.png)](https://travis-ci.org/davedevelopment/phpmig)
+
 What is it?
 -----------
 
