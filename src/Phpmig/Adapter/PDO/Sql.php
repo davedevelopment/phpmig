@@ -119,6 +119,8 @@ class Sql implements AdapterInterface
         // loop through the list of tables
         //
         while($table = $tables->fetchColumn()) {
+            // did we find the table we're looking for? if so, return true
+            //
             if ($table == $this->tableName) {
                 return true;
             }
