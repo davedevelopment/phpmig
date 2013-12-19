@@ -156,18 +156,16 @@ class Sql implements AdapterInterface
     }
 
     /**
-     * The magic getter for custom properties
+     * Get the appropriate query for the PDO driver
      *
-     * This getter currently handles one property: queries. This is a list of
-     * queries used by the Sql adapter and varies depending on the value of
-     * $this->pdoDriverName. At present, only queries for sqlite, mysql, & pgsql
-     * are specified; if a different PDO driver is used, the mysql/pgsql queries
-     * will be returned, which may or may not work for the given database.
+     * At present, only queries for sqlite, mysql, & pgsql are specified; if a
+     * different PDO driver is used, the mysql/pgsql queries will be returned,
+     * which may or may not work for the given database.
      *
-     * @param string $name
-     * The name of the property to retrieve
+     * @param string $type
+     * The type of the query to retrieve
      *
-     * @return mixed
+     * @return string
      */
     protected function getQuery($type)
     {
