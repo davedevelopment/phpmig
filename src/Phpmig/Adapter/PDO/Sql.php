@@ -8,6 +8,7 @@ use Phpmig\Migration\Migration,
 
 /**
  * Simple PDO adapter to work with SQL database
+ *
  * @author Samuel Laulhau https://github.com/lalop
  */
 
