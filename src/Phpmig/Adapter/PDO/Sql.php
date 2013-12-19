@@ -145,5 +145,66 @@ class Sql implements AdapterInterface
         return $this;
     }
 
+    /**
+     * The magic getter for custom properties
+     *
+     * This getter currently handles one property: queries. This is a list of
+     * queries used by the Sql adapter and varies depending on the value of
+     * $this->pdoDriverName. At present, only queries for sqlite, mysql, & pgsql
+     * are specified; if a different PDO driver is used, the mysql/pgsql queries
+     * will be returned, which may or may not work for the given database.
+     *
+     * @param string $name
+     * The name of the property to retrieve
+     *
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        // is this a request for the "queries" array? if so, return the
+        // appropriate list
+        //
+        if($name==='queries')
+        {
+            switch($this->pdoDriverName)
+            {
+                case 'sqlite':
+                    return array(
+
+                            'fetchAll'     => "SELECT `version` FROM {$this->quotedTableName()} ORDER BY `version` ASC",
+
+                            'up'           => "INSERT INTO {$this->quotedTableName()} VALUES (:version);",
+
+                            'down'         => "DELETE FROM {$this->quotedTableName()} WHERE version = :version",
+
+                            'hasSchema'    => "SELECT `name` FROM `sqlite_master` WHERE `type`='table';",
+
+                            'createSchema' => "CREATE table {$this->quotedTableName()} (`version` NOT NULL);",
+
+                        );
+
+                case 'mysql':
+                case 'pgsql':
+                default:
+                    return array(
+
+                            'fetchAll'     => "SELECT `version` FROM {$this->quotedTableName()} ORDER BY `version` ASC",
+
+                            'up'           => "INSERT into {$this->quotedTableName()} set version = :version",
+
+                            'down'         => "DELETE from {$this->quotedTableName()} where version = :version",
+
+                            'hasSchema'    => "SHOW TABLES;",
+
+                            'createSchema' => "CREATE TABLE {$this->quotedTableName()} (`version` VARCHAR(255) NOT NULL);",
+
+                        );
+            }
+        }
+
+        // it's a request for something else. Let the parent class handle it
+        //
+        return parent::__get($name);
+    }
 }
 
