@@ -55,12 +55,8 @@ class Sql implements AdapterInterface
      */
     public function fetchAll()
     {
-        // get the appropriate query
-        //
         $sql = $this->getQuery('fetchAll');
 
-        // return the results of the query
-        //
         return $this->connection->query($sql, PDO::FETCH_COLUMN, 0)->fetchAll();
     }
 
@@ -72,12 +68,8 @@ class Sql implements AdapterInterface
      */
     public function up(Migration $migration)
     {
-        // get the appropriate query
-        //
         $sql = $this->getQuery('up');
 
-        // prepare and execute the query
-        //
         $this->connection->prepare($sql)
                 ->execute(array(':version' => $migration->getVersion()));
 
@@ -92,12 +84,8 @@ class Sql implements AdapterInterface
      */
     public function down(Migration $migration)
     {
-        // get the appropriate query
-        //
         $sql = $this->getQuery('down');
 
-        // prepare and execute the query
-        //
         $this->connection->prepare($sql)
                 ->execute(array(':version' => $migration->getVersion()));
 
@@ -112,27 +100,16 @@ class Sql implements AdapterInterface
      */
     public function hasSchema()
     {
-        // get the appropriate query
-        //
         $sql = $this->getQuery('hasSchema');
 
-        // get the list of tables
-        //
         $tables = $this->connection->query($sql);
 
-        // loop through the list of tables
-        //
         while($table = $tables->fetchColumn()) {
-            // did we find the table we're looking for? if so, return true
-            //
             if ($table == $this->tableName) {
                 return true;
             }
         }
 
-        // we made it all the way through the list of tables without finding the
-        // one we're looking for. Return false.
-        //
         return false;
     }
 
@@ -144,12 +121,8 @@ class Sql implements AdapterInterface
      */
     public function createSchema()
     {
-        // get the appropriate query
-        //
         $sql = $this->getQuery('createSchema');
 
-        // execute the query
-        //
         $this->connection->exec($sql);
 
         return $this;
@@ -169,8 +142,6 @@ class Sql implements AdapterInterface
      */
     protected function getQuery($type)
     {
-        // the list of queries
-        //
         $queries = array();
 
         switch($this->pdoDriverName)
@@ -210,13 +181,9 @@ class Sql implements AdapterInterface
                 break;
         }
 
-        // is the type listed in the queries array? if not, thrown an exception
-        //
         if(!array_key_exists($type, $queries))
             throw new \InvalidArgumentException("Query type not found: '{$type}'");
 
-        // it's a request for something else. Let the parent class handle it
-        //
         return $queries[$type];
     }
 }
