@@ -18,12 +18,12 @@ class Sql implements AdapterInterface
     /**
      * @var \PDO
      */
-    protected $connection = null;
+    protected $connection    = null;
 
     /**
      * @var string
      */
-    protected $tableName = null;
+    protected $tableName     = null;
 
     /**
      * @var string
@@ -38,8 +38,8 @@ class Sql implements AdapterInterface
      */
     public function __construct(\PDO $connection, $tableName)
     {
-        $this->connection = $connection;
-        $this->tableName  = $tableName;
+        $this->connection    = $connection;
+        $this->tableName     = $tableName;
         $this->pdoDriverName = $connection->getAttribute(\PDO::ATTR_DRIVER_NAME);
     }
 
