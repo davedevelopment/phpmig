@@ -59,6 +59,8 @@ class Sql implements AdapterInterface
         //
         $sql = $this->queries['fetchAll'];
 
+        // return the results of the query
+        //
         return $this->connection->query($sql, PDO::FETCH_COLUMN, 0)->fetchAll();
     }
 
@@ -74,6 +76,8 @@ class Sql implements AdapterInterface
         //
         $sql = $this->queries['up'];
 
+        // prepare and execute the query
+        //
         $this->connection->prepare($sql)
                 ->execute(array(':version' => $migration->getVersion()));
         return $this;
@@ -91,6 +95,8 @@ class Sql implements AdapterInterface
         //
         $sql = $this->queries['down'];
 
+        // prepare and execute the query
+        //
         $this->connection->prepare($sql)
                 ->execute(array(':version' => $migration->getVersion()));
         return $this;
@@ -108,11 +114,16 @@ class Sql implements AdapterInterface
         //
         $sql = $this->queries['hasSchema'];
 
+        // loop through the list of tables
+        //
         while($table = $tables->fetchColumn()) {
             if ($table == $this->tableName) {
                 return true;
             }
         }
+        // we made it all the way through the list of tables without finding the
+        // one we're looking for. Return false.
+        //
         return false;
     }
 
@@ -128,6 +139,8 @@ class Sql implements AdapterInterface
         //
         $sql = $this->queries['createSchema'];
 
+        // execute the query
+        //
         $this->connection->exec($sql);
         return $this;
     }
