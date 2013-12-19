@@ -39,6 +39,7 @@ class Sql implements AdapterInterface
     {
         $this->connection = $connection;
         $this->tableName  = $tableName;
+        $this->pdoDriverName = $connection->getAttribute(\PDO::ATTR_DRIVER_NAME);
     }
 
     private function quotedTableName()
