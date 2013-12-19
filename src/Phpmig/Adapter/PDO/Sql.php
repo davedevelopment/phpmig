@@ -55,7 +55,10 @@ class Sql implements AdapterInterface
      */
     public function fetchAll()
     {
-        $sql = "SELECT `version` FROM {$this->quotedTableName()} ORDER BY `version` ASC";
+        // get the appropriate query
+        //
+        $sql = $this->queries['fetchAll'];
+
         return $this->connection->query($sql, PDO::FETCH_COLUMN, 0)->fetchAll();
     }
 
@@ -67,7 +70,10 @@ class Sql implements AdapterInterface
      */
     public function up(Migration $migration)
     {
-        $sql = "INSERT into {$this->quotedTableName()} set version = :version";
+        // get the appropriate query
+        //
+        $sql = $this->queries['up'];
+
         $this->connection->prepare($sql)
                 ->execute(array(':version' => $migration->getVersion()));
         return $this;
@@ -81,7 +87,10 @@ class Sql implements AdapterInterface
      */
     public function down(Migration $migration)
     {
-        $sql = "DELETE from {$this->quotedTableName()} where version = :version";
+        // get the appropriate query
+        //
+        $sql = $this->queries['down'];
+
         $this->connection->prepare($sql)
                 ->execute(array(':version' => $migration->getVersion()));
         return $this;
@@ -95,7 +104,10 @@ class Sql implements AdapterInterface
      */
     public function hasSchema()
     {
-        $tables = $this->connection->query("show tables");
+        // get the appropriate query
+        //
+        $sql = $this->queries['hasSchema'];
+
         while($table = $tables->fetchColumn()) {
             if ($table == $this->tableName) {
                 return true;
@@ -112,9 +124,10 @@ class Sql implements AdapterInterface
      */
     public function createSchema()
     {
-        $sql = "CREATE table {$this->quotedTableName()} (version %s NOT NULL)";
-        $driver = $this->connection->getAttribute(PDO::ATTR_DRIVER_NAME);
-        $sql = sprintf($sql,in_array($driver,array('mysql','pgsql'))? 'VARCHAR(255)' : '');
+        // get the appropriate query
+        //
+        $sql = $this->queries['createSchema'];
+
         $this->connection->exec($sql);
         return $this;
     }
