@@ -51,12 +51,17 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        
         $this->bootstrap($input, $output);
-        
+
         $path    = $input->getArgument('path');
+        $setsKey = $input->getOption('sets-key');
         if( null === $path ){
-            $path = $this->container['phpmig.migrations_path'];
+            if (isset($this->container['phpmig.migrations_path'])) {
+                $path = $this->container['phpmig.migrations_path'];
+            }
+            if (isset($this->container['phpmig.sets'][$setsKey]['migrations_path'])) {
+                $path = $this->container['phpmig.sets'][$setsKey]['migrations_path'];
+            }
         }
         $locator = new FileLocator(array());
         $path    = $locator->locate($path, getcwd(), $first = true);
@@ -70,7 +75,12 @@ EOT
 
         $path = realpath($path);
 
-        $migrationName = $input->getArgument('name');
+        list($setsKey,) = explode(self::SETS_KEY_SEPARATOR, $input->getOption('sets-key'));
+        if ('' != $setsKey) {
+            $setsKey = $setsKey . '_';
+        }
+
+        $migrationName = $setsKey . $input->getArgument('name');
         $basename  = date('YmdHis') . '_' . $migrationName . '.php';
 
         $path = $path . DIRECTORY_SEPARATOR . $basename;
