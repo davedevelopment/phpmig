@@ -31,12 +31,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class AbstractCommand extends Command
 {
     /**
+     * @const ADAPTER_NAME_SEPARATOR
+     */
+    const ADAPTER_NAME_SEPARATOR = ".";
+
+    /**
      * @var \ArrayAccess
      */
     protected $container = null;
 
     /**
-     * @var AdapterInterface
+     * @var mixed
      */
     protected $adapter = null;
 
@@ -55,6 +60,7 @@ abstract class AbstractCommand extends Command
      */
     protected function configure()
     {
+        $this->addOption('--adapter-name', '-a', InputOption::VALUE_REQUIRED, 'The adapter name for the migration');
         $this->addOption('--bootstrap', '-b', InputOption::VALUE_REQUIRED, 'The bootstrap file to load');
     }
 
@@ -69,9 +75,8 @@ abstract class AbstractCommand extends Command
 
         $container = $this->bootstrapContainer();
         $this->setContainer($container);
-        $this->setAdapter($this->bootstrapAdapter());
-
-        $this->setMigrations($this->bootstrapMigrations($output));
+        $this->setAdapter($this->bootstrapAdapter($input->getOption('adapter-name')));
+        $this->setMigrations($this->bootstrapMigrations($input, $output));
 
         $container['phpmig.migrator'] = $this->bootstrapMigrator($output);
 
@@ -119,10 +124,11 @@ abstract class AbstractCommand extends Command
     }
 
     /**
+     * @param  mixed $adapterName
      * @return AdapterInterface
      * @throws \RuntimeException
      */
-    protected function bootstrapAdapter()
+    protected function bootstrapAdapter($adapterName)
     {
         $container = $this->getContainer();
 
@@ -133,24 +139,34 @@ abstract class AbstractCommand extends Command
         }
 
         $adapter = $container['phpmig.adapter'];
-
-        if (!($adapter instanceof AdapterInterface)) {
+        if (
+            ! (is_array($adapter) and (isset($adapter[$adapterName]) and ($adapter[$adapterName] instanceof AdapterInterface)))
+           and
+            ! ($adapter instanceof AdapterInterface)
+        ) {
             throw new \RuntimeException("phpmig.adapter must be an instance of \\Phpmig\\Adapter\\AdapterInterface");
         }
 
-        if (!$adapter->hasSchema()) {
-            $adapter->createSchema();
+        if (is_array($adapter)) {
+            $current_adapter = $adapter[$adapterName];
+        } else {
+            $current_adapter = $adapter;
         }
 
-        return $adapter;
+        if (!$current_adapter->hasSchema()) {
+            $current_adapter->createSchema();
+        }
+
+        return $current_adapter;
     }
 
     /**
+     * @param InputInterface  $input
      * @param OutputInterface $output
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    protected function bootstrapMigrations(OutputInterface $output)
+    protected function bootstrapMigrations(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
 
@@ -176,14 +192,23 @@ abstract class AbstractCommand extends Command
         }
         $migrations = array_unique($migrations);
 
+        list($adapterName,) = explode(self::ADAPTER_NAME_SEPARATOR, $input->getOption('adapter-name'));
         $versions = array();
         $names = array();
         foreach ($migrations as $path) {
-            if (!preg_match('/^[0-9]+/', basename($path), $matches)) {
+            if (!preg_match('/^([0-9]+)_(([a-zA-Z0-9]+)_)?/', basename($path), $matches)) {
                 throw new \InvalidArgumentException(sprintf('The file "%s" does not have a valid migration filename', $path));
             }
 
-            $version = $matches[0];
+            $version = $matches[1];
+            $guessAdapter = '';
+            if (isset($matches[3])) {
+                $guessAdapter = $matches[3];
+            }
+
+            if ($adapterName != $guessAdapter) {
+                continue;
+            }
 
             if (isset($versions[$version])) {
                 throw new \InvalidArgumentException(sprintf('Duplicate migration, "%s" has the same version as "%s"', $path, $versions[$version]->getName()));
@@ -224,6 +249,7 @@ abstract class AbstractCommand extends Command
             }
 
             $migration->setOutput($output); // inject output
+            $migration->setAdapter($this->getAdapter()); // inject adapter
 
             $versions[$version] = $migration;
         }
@@ -314,14 +340,14 @@ abstract class AbstractCommand extends Command
      * @param AdapterInterface $adapter
      * @return AbstractCommand
      */
-    public function setAdapter(AdapterInterface $adapter)
+    public function setAdapter($adapter)
     {
         $this->adapter = $adapter;
         return $this;
     }
 
     /**
-     * Get Adapter
+     * Get adapter
      *
      * @return AdapterInterface
      */
@@ -333,7 +359,7 @@ abstract class AbstractCommand extends Command
     /**
      * transform create_table_user to CreateTableUser
      */
-    protected function migrationToClassName( $migrationName )
+    protected function migrationToClassName($migrationName)
     {
         $class = str_replace('_', ' ', $migrationName);
         $class = ucwords($class);

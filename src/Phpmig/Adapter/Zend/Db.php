@@ -59,6 +59,16 @@ class Db implements AdapterInterface
     }
 
     /**
+     * Get adapter connection
+     *
+     * @return \Zend_Db_Adapter_Abstract
+     */
+    public function getConnection()
+    {
+        return $this->adapter;
+    }
+
+    /**
      * Get all migrated version numbers
      *
      * @return array

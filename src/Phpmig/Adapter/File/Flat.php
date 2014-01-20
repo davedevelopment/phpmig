@@ -40,6 +40,17 @@ class Flat implements AdapterInterface
     }
 
     /**
+     * Get adapter connection
+     *
+     * @thorws \LogicException
+     * @return void
+     */
+    public function getConnection()
+    {
+        throw new \LogicException('This adapter unsupported');
+    }
+
+    /**
      * Get all migrated version numbers
      *
      * @return array
