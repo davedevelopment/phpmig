@@ -41,7 +41,10 @@ class Mongo implements AdapterInterface
      */
     public function fetchAll()
     {
-        return $this->connection->selectCollection($this->tableName)->find();
+        $cursor = $this->connection->selectCollection($this->tableName)->find();
+        $versions = array(); 
+        foreach($cursor as $version) $versions[] = $version['version'];
+        return $versions;
     }
 
     /**
