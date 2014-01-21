@@ -24,6 +24,13 @@ use \Phpmig\Migration\Migration;
 interface AdapterInterface
 {
     /**
+     * Get adapter connection
+     *
+     * @return  mixed
+     */
+    public function getConnection();
+
+    /**
      * Get all migrated version numbers
      *
      * @return array

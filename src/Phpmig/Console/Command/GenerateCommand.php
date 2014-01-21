@@ -51,9 +51,8 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        
         $this->bootstrap($input, $output);
-        
+
         $path    = $input->getArgument('path');
         if( null === $path ){
             $path = $this->container['phpmig.migrations_path'];
@@ -70,7 +69,12 @@ EOT
 
         $path = realpath($path);
 
-        $migrationName = $input->getArgument('name');
+        list($adapterName,) = explode(self::ADAPTER_NAME_SEPARATOR, $input->getOption('adapter-name'));
+        if ('' != $adapterName) {
+            $adapterName = $adapterName . '_';
+        }
+
+        $migrationName = $adapterName . $input->getArgument('name');
         $basename  = date('YmdHis') . '_' . $migrationName . '.php';
 
         $path = $path . DIRECTORY_SEPARATOR . $basename;

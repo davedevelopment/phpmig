@@ -35,6 +35,16 @@ class Mongo implements AdapterInterface
     }
 
     /**
+     * Get adapter connection
+     *
+     * @return \MongoDb
+     */
+    public function getConnection()
+    {
+        return $this->connection;
+    }
+
+    /**
      * Fetch all
      *
      * @return array

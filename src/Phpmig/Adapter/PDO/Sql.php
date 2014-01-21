@@ -49,6 +49,16 @@ class Sql implements AdapterInterface
     }
 
     /**
+     * Get adapter connection
+     *
+     * @return \PDO
+     */
+    public function getConnection()
+    {
+        return $this->connection;
+    }
+
+    /**
      * Fetch all
      *
      * @return array

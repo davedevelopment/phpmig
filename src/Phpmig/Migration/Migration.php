@@ -37,6 +37,11 @@ class Migration
     protected $container = null;
 
     /**
+     * @var \Phpmig\Adapter\AdapterInterface
+     */
+    protected $adapter = null;
+
+    /**
      * @var OutputInterface
      */
     protected $output = null;
@@ -137,6 +142,28 @@ class Migration
     public function setContainer(\ArrayAccess $container)
     {
         $this->container = $container;
+        return $this;
+    }
+
+    /**
+     * Get adapter
+     *
+     * @return \Phpmig\Adapter\AdapterInterface
+     */
+    public function getAdapter()
+    {
+        return $this->adapter;
+    }
+
+    /**
+     * Set adapter
+     *
+     * @param \Phpmig\Adapter\AdapterInterface $adapter
+     * @return Migrator
+     */
+    public function setAdapter(\Phpmig\Adapter\AdapterInterface $adapter)
+    {
+        $this->adapter = $adapter;
         return $this;
     }
 
