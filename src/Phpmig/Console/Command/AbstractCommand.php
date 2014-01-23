@@ -252,13 +252,9 @@ abstract class AbstractCommand extends Command
         }
 
         if (isset($container['phpmig.sets'][$set])) {
-            if (!isset($container['phpmig.sets'][$set]['connection'])) {
-                throw new \RuntimeException(
-                    $this->getBootstrap()
-                    . 'phpmig.php must return container with connection array at phpmig.sets'
-                );
+            if (isset($container['phpmig.sets'][$set]['connection'])) {
+                $container['phpmig.connection'] = $container['phpmig.sets'][$set]['connection'];
             }
-            $container['phpmig.currentSet'] = $container['phpmig.sets'][$set]['connection'];
         }
 
         ksort($versions);
