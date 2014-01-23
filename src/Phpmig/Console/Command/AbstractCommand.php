@@ -31,11 +31,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class AbstractCommand extends Command
 {
     /**
-     * @const SET_SEPARATOR
-     */
-    const SET_SEPARATOR = ".";
-
-    /**
      * @var \ArrayAccess
      */
     protected $container = null;
@@ -205,24 +200,14 @@ abstract class AbstractCommand extends Command
         }
         $migrations = array_unique($migrations);
 
-        list($setPrefix,) = explode(self::SET_SEPARATOR, $set);
         $versions = array();
         $names = array();
         foreach ($migrations as $path) {
-            if (!preg_match('/^([0-9]+)_(([a-zA-Z0-9]+)_)?/', basename($path), $matches)) {
+            if (!preg_match('/^([0-9]+)_/', basename($path), $matches)) {
                 throw new \InvalidArgumentException(sprintf('The file "%s" does not have a valid migration filename', $path));
             }
 
             $version = $matches[1];
-            $guessSetPrefix = '';
-            if (isset($matches[3])) {
-                $guessSetPrefix = $matches[3];
-            }
-
-            if ($setPrefix != $guessSetPrefix) {
-                continue;
-            }
-
             if (isset($versions[$version])) {
                 throw new \InvalidArgumentException(sprintf('Duplicate migration, "%s" has the same version as "%s"', $path, $versions[$version]->getName()));
             }

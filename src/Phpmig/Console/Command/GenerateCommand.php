@@ -53,7 +53,7 @@ EOT
     {
         $this->bootstrap($input, $output);
 
-        $path    = $input->getArgument('path');
+        $path = $input->getArgument('path');
         $set = $input->getOption('set');
         if( null === $path ){
             if (isset($this->container['phpmig.migrations_path'])) {
@@ -75,12 +75,7 @@ EOT
 
         $path = realpath($path);
 
-        list($set,) = explode(self::SET_SEPARATOR, $input->getOption('set'));
-        if ('' != $set) {
-            $set .= '_';
-        }
-
-        $migrationName = $set . $input->getArgument('name');
+        $migrationName = $input->getArgument('name');
         $basename  = date('YmdHis') . '_' . $migrationName . '.php';
 
         $path = $path . DIRECTORY_SEPARATOR . $basename;
