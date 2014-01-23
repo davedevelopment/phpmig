@@ -54,13 +54,13 @@ EOT
         $this->bootstrap($input, $output);
 
         $path    = $input->getArgument('path');
-        $setsKey = $input->getOption('sets-key');
+        $set = $input->getOption('set');
         if( null === $path ){
             if (isset($this->container['phpmig.migrations_path'])) {
                 $path = $this->container['phpmig.migrations_path'];
             }
-            if (isset($this->container['phpmig.sets'][$setsKey]['migrations_path'])) {
-                $path = $this->container['phpmig.sets'][$setsKey]['migrations_path'];
+            if (isset($this->container['phpmig.sets'][$set]['migrations_path'])) {
+                $path = $this->container['phpmig.sets'][$set]['migrations_path'];
             }
         }
         $locator = new FileLocator(array());
@@ -75,12 +75,12 @@ EOT
 
         $path = realpath($path);
 
-        list($setsKey,) = explode(self::SETS_KEY_SEPARATOR, $input->getOption('sets-key'));
-        if ('' != $setsKey) {
-            $setsKey = $setsKey . '_';
+        list($set,) = explode(self::SET_SEPARATOR, $input->getOption('set'));
+        if ('' != $set) {
+            $set .= '_';
         }
 
-        $migrationName = $setsKey . $input->getArgument('name');
+        $migrationName = $set . $input->getArgument('name');
         $basename  = date('YmdHis') . '_' . $migrationName . '.php';
 
         $path = $path . DIRECTORY_SEPARATOR . $basename;

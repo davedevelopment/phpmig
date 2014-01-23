@@ -31,9 +31,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class AbstractCommand extends Command
 {
     /**
-     * @const SETS_KEY_SEPARATOR
+     * @const SET_SEPARATOR
      */
-    const SETS_KEY_SEPARATOR = ".";
+    const SET_SEPARATOR = ".";
 
     /**
      * @var \ArrayAccess
@@ -60,7 +60,7 @@ abstract class AbstractCommand extends Command
      */
     protected function configure()
     {
-        $this->addOption('--sets-key', '-s', InputOption::VALUE_REQUIRED, 'The phpmig.sets key');
+        $this->addOption('--set', '-s', InputOption::VALUE_REQUIRED, 'The phpmig.sets key');
         $this->addOption('--bootstrap', '-b', InputOption::VALUE_REQUIRED, 'The bootstrap file to load');
     }
 
@@ -144,13 +144,13 @@ abstract class AbstractCommand extends Command
         }
 
         if (isset($container['phpmig.sets'])) {
-            $setsKey = $input->getOption('sets-key');
-            if (!isset($container['phpmig.sets'][$setsKey]['adapter'])) {
+            $set = $input->getOption('set');
+            if (!isset($container['phpmig.sets'][$set]['adapter'])) {
                 throw new \RuntimeException(
-                    $setsKey . ' is undefined keys or adapter at phpmig.sets'
+                    $set . ' is undefined keys or adapter at phpmig.sets'
                 );
             }
-            $adapter = $container['phpmig.sets'][$setsKey]['adapter'];
+            $adapter = $container['phpmig.sets'][$set]['adapter'];
         }
         if (isset($container['phpmig.adapter'])) {
             $adapter = $container['phpmig.adapter'];
@@ -176,12 +176,12 @@ abstract class AbstractCommand extends Command
     protected function bootstrapMigrations(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
-        $setsKey = $input->getOption('sets-key');
+        $set = $input->getOption('set');
 
-        $migrationsConfigured = isset($container['phpmig.migrations']) || isset($container['phpmig.migrations_path']) || isset($container['phpmig.sets'][$setsKey]['migrations_path']);
+        $migrationsConfigured = isset($container['phpmig.migrations']) || isset($container['phpmig.migrations_path']) || isset($container['phpmig.sets'][$set]['migrations_path']);
         $validMigrationFiles = !isset($container['phpmig.migrations']) || is_array($container['phpmig.migrations']);
         $validMigrationPath = !isset($container['phpmig.migrations_path']) || is_dir($container['phpmig.migrations_path']);
-        $validSetsMigrationPath = !isset($container['phpmig.sets'][$setsKey]['migrations_path']) || is_dir($container['phpmig.sets'][$setsKey]['migrations_path']);
+        $validSetsMigrationPath = !isset($container['phpmig.sets'][$set]['migrations_path']) || is_dir($container['phpmig.sets'][$set]['migrations_path']);
 
         if (!$migrationsConfigured || !$validMigrationFiles || !$validMigrationPath || !$validSetsMigrationPath) {
             throw new \RuntimeException(
@@ -199,13 +199,13 @@ abstract class AbstractCommand extends Command
             $migrationsPath = realpath($container['phpmig.migrations_path']);
             $migrations = array_merge($migrations, glob($migrationsPath . DIRECTORY_SEPARATOR . '*.php'));
         }
-        if (!empty($setsKey) && isset($container['phpmig.sets'][$setsKey]['migrations_path'])) {
-            $migrationsPath = realpath($container['phpmig.sets'][$setsKey]['migrations_path']);
+        if (!empty($set) && isset($container['phpmig.sets'][$set]['migrations_path'])) {
+            $migrationsPath = realpath($container['phpmig.sets'][$set]['migrations_path']);
             $migrations = array_merge($migrations, glob($migrationsPath . DIRECTORY_SEPARATOR . '*.php'));
         }
         $migrations = array_unique($migrations);
 
-        list($setsKeyPrefix,) = explode(self::SETS_KEY_SEPARATOR, $setsKey);
+        list($setPrefix,) = explode(self::SET_SEPARATOR, $set);
         $versions = array();
         $names = array();
         foreach ($migrations as $path) {
@@ -214,12 +214,12 @@ abstract class AbstractCommand extends Command
             }
 
             $version = $matches[1];
-            $guessSetsKeyPrefix = '';
+            $guessSetPrefix = '';
             if (isset($matches[3])) {
-                $guessSetsKeyPrefix = $matches[3];
+                $guessSetPrefix = $matches[3];
             }
 
-            if ($setsKeyPrefix != $guessSetsKeyPrefix) {
+            if ($setPrefix != $guessSetPrefix) {
                 continue;
             }
 
@@ -266,14 +266,14 @@ abstract class AbstractCommand extends Command
             $versions[$version] = $migration;
         }
 
-        if (isset($container['phpmig.sets'][$setsKey])) {
-            if (!isset($container['phpmig.sets'][$setsKey]['connection'])) {
+        if (isset($container['phpmig.sets'][$set])) {
+            if (!isset($container['phpmig.sets'][$set]['connection'])) {
                 throw new \RuntimeException(
                     $this->getBootstrap()
                     . 'phpmig.php must return container with connection array at phpmig.sets'
                 );
             }
-            $container['phpmig.currentSet'] = $container['phpmig.sets'][$setsKey]['connection'];
+            $container['phpmig.currentSet'] = $container['phpmig.sets'][$set]['connection'];
         }
 
         ksort($versions);
