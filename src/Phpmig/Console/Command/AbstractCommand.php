@@ -176,7 +176,7 @@ abstract class AbstractCommand extends Command
         $migrationsConfigured = isset($container['phpmig.migrations']) || isset($container['phpmig.migrations_path']) || isset($container['phpmig.sets'][$set]['migrations_path']);
         $validMigrationFiles = !isset($container['phpmig.migrations']) || is_array($container['phpmig.migrations']);
         $validMigrationPath = !isset($container['phpmig.migrations_path']) || is_dir($container['phpmig.migrations_path']);
-        $validSetsMigrationPath = !isset($container['phpmig.sets'][$set]['migrations_path']) || is_dir($container['phpmig.sets'][$set]['migrations_path']);
+        $validSetsMigrationPath = !isset($container['phpmig.sets']) || !isset($container['phpmig.sets'][$set]['migrations_path']) || is_dir($container['phpmig.sets'][$set]['migrations_path']);
 
         if (!$migrationsConfigured || !$validMigrationFiles || !$validMigrationPath || !$validSetsMigrationPath) {
             throw new \RuntimeException(
@@ -194,7 +194,7 @@ abstract class AbstractCommand extends Command
             $migrationsPath = realpath($container['phpmig.migrations_path']);
             $migrations = array_merge($migrations, glob($migrationsPath . DIRECTORY_SEPARATOR . '*.php'));
         }
-        if (!empty($set) && isset($container['phpmig.sets'][$set]['migrations_path'])) {
+        if (isset($container['phpmig.sets']) && isset($container['phpmig.sets'][$set]['migrations_path'])) {
             $migrationsPath = realpath($container['phpmig.sets'][$set]['migrations_path']);
             $migrations = array_merge($migrations, glob($migrationsPath . DIRECTORY_SEPARATOR . '*.php'));
         }
@@ -203,11 +203,11 @@ abstract class AbstractCommand extends Command
         $versions = array();
         $names = array();
         foreach ($migrations as $path) {
-            if (!preg_match('/^([0-9]+)_/', basename($path), $matches)) {
+            if (!preg_match('/^[0-9]+/', basename($path), $matches)) {
                 throw new \InvalidArgumentException(sprintf('The file "%s" does not have a valid migration filename', $path));
             }
 
-            $version = $matches[1];
+            $version = $matches[0];
             if (isset($versions[$version])) {
                 throw new \InvalidArgumentException(sprintf('Duplicate migration, "%s" has the same version as "%s"', $path, $versions[$version]->getName()));
             }
@@ -251,10 +251,8 @@ abstract class AbstractCommand extends Command
             $versions[$version] = $migration;
         }
 
-        if (isset($container['phpmig.sets'][$set])) {
-            if (isset($container['phpmig.sets'][$set]['connection'])) {
-                $container['phpmig.connection'] = $container['phpmig.sets'][$set]['connection'];
-            }
+        if (isset($container['phpmig.sets']) && isset($container['phpmig.sets'][$set]['connection'])) {
+            $container['phpmig.connection'] = $container['phpmig.sets'][$set]['connection'];
         }
 
         ksort($versions);

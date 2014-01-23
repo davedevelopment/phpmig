@@ -59,7 +59,7 @@ EOT
             if (isset($this->container['phpmig.migrations_path'])) {
                 $path = $this->container['phpmig.migrations_path'];
             }
-            if (isset($this->container['phpmig.sets'][$set]['migrations_path'])) {
+            if (isset($this->container['phpmig.sets']) && isset($this->container['phpmig.sets'][$set]['migrations_path'])) {
                 $path = $this->container['phpmig.sets'][$set]['migrations_path'];
             }
         }
