@@ -55,6 +55,7 @@ abstract class AbstractCommand extends Command
      */
     protected function configure()
     {
+        $this->addOption('--set', '-s', InputOption::VALUE_REQUIRED, 'The phpmig.sets key');
         $this->addOption('--bootstrap', '-b', InputOption::VALUE_REQUIRED, 'The bootstrap file to load');
     }
 
@@ -69,9 +70,9 @@ abstract class AbstractCommand extends Command
 
         $container = $this->bootstrapContainer();
         $this->setContainer($container);
-        $this->setAdapter($this->bootstrapAdapter());
+        $this->setAdapter($this->bootstrapAdapter($input));
 
-        $this->setMigrations($this->bootstrapMigrations($output));
+        $this->setMigrations($this->bootstrapMigrations($input, $output));
 
         $container['phpmig.migrator'] = $this->bootstrapMigrator($output);
 
@@ -119,23 +120,39 @@ abstract class AbstractCommand extends Command
     }
 
     /**
+     * @param InputInterface  $input
      * @return AdapterInterface
      * @throws \RuntimeException
      */
-    protected function bootstrapAdapter()
+    protected function bootstrapAdapter(InputInterface $input)
     {
         $container = $this->getContainer();
 
-        if (!isset($container['phpmig.adapter'])) {
+        $validAdapter = isset($container['phpmig.adapter']);
+        $validSets = !isset($container['phpmig.sets']) || is_array($container['phpmig.sets']);
+
+        if (!$validAdapter && !$validSets) {
             throw new \RuntimeException(
-                $this->getBootstrap() . " must return container with service at phpmig.adapter"
+                $this->getBootstrap()
+                . 'must return container with phpmig.adapter or phpmig.sets'
             );
         }
 
-        $adapter = $container['phpmig.adapter'];
+        if (isset($container['phpmig.sets'])) {
+            $set = $input->getOption('set');
+            if (!isset($container['phpmig.sets'][$set]['adapter'])) {
+                throw new \RuntimeException(
+                    $set . ' is undefined keys or adapter at phpmig.sets'
+                );
+            }
+            $adapter = $container['phpmig.sets'][$set]['adapter'];
+        }
+        if (isset($container['phpmig.adapter'])) {
+            $adapter = $container['phpmig.adapter'];
+        }
 
         if (!($adapter instanceof AdapterInterface)) {
-            throw new \RuntimeException("phpmig.adapter must be an instance of \\Phpmig\\Adapter\\AdapterInterface");
+            throw new \RuntimeException("phpmig.adapter or phpmig.sets must be an instance of \\Phpmig\\Adapter\\AdapterInterface");
         }
 
         if (!$adapter->hasSchema()) {
@@ -146,23 +163,26 @@ abstract class AbstractCommand extends Command
     }
 
     /**
+     * @param InputInterface  $input
      * @param OutputInterface $output
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    protected function bootstrapMigrations(OutputInterface $output)
+    protected function bootstrapMigrations(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
+        $set = $input->getOption('set');
 
-        $migrationsConfigured = isset($container['phpmig.migrations']) || isset($container['phpmig.migrations_path']);
+        $migrationsConfigured = isset($container['phpmig.migrations']) || isset($container['phpmig.migrations_path']) || isset($container['phpmig.sets'][$set]['migrations_path']);
         $validMigrationFiles = !isset($container['phpmig.migrations']) || is_array($container['phpmig.migrations']);
         $validMigrationPath = !isset($container['phpmig.migrations_path']) || is_dir($container['phpmig.migrations_path']);
+        $validSetsMigrationPath = !isset($container['phpmig.sets']) || !isset($container['phpmig.sets'][$set]['migrations_path']) || is_dir($container['phpmig.sets'][$set]['migrations_path']);
 
-        if (!$migrationsConfigured || !$validMigrationFiles || !$validMigrationPath) {
+        if (!$migrationsConfigured || !$validMigrationFiles || !$validMigrationPath || !$validSetsMigrationPath) {
             throw new \RuntimeException(
                 $this->getBootstrap()
                 . ' must return container with array at phpmig.migrations or migrations default path at '
-                . 'phpmig.migrations_path'
+                . 'phpmig.migrations_path or migrations default path at phpmig.sets'
             );
         }
 
@@ -172,6 +192,10 @@ abstract class AbstractCommand extends Command
         }
         if (isset($container['phpmig.migrations_path'])) {
             $migrationsPath = realpath($container['phpmig.migrations_path']);
+            $migrations = array_merge($migrations, glob($migrationsPath . DIRECTORY_SEPARATOR . '*.php'));
+        }
+        if (isset($container['phpmig.sets']) && isset($container['phpmig.sets'][$set]['migrations_path'])) {
+            $migrationsPath = realpath($container['phpmig.sets'][$set]['migrations_path']);
             $migrations = array_merge($migrations, glob($migrationsPath . DIRECTORY_SEPARATOR . '*.php'));
         }
         $migrations = array_unique($migrations);
@@ -184,7 +208,6 @@ abstract class AbstractCommand extends Command
             }
 
             $version = $matches[0];
-
             if (isset($versions[$version])) {
                 throw new \InvalidArgumentException(sprintf('Duplicate migration, "%s" has the same version as "%s"', $path, $versions[$version]->getName()));
             }
@@ -226,6 +249,10 @@ abstract class AbstractCommand extends Command
             $migration->setOutput($output); // inject output
 
             $versions[$version] = $migration;
+        }
+
+        if (isset($container['phpmig.sets']) && isset($container['phpmig.sets'][$set]['connection'])) {
+            $container['phpmig.connection'] = $container['phpmig.sets'][$set]['connection'];
         }
 
         ksort($versions);

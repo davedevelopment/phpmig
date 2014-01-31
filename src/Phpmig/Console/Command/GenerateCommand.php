@@ -51,12 +51,17 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        
         $this->bootstrap($input, $output);
-        
-        $path    = $input->getArgument('path');
+
+        $path = $input->getArgument('path');
+        $set = $input->getOption('set');
         if( null === $path ){
-            $path = $this->container['phpmig.migrations_path'];
+            if (isset($this->container['phpmig.migrations_path'])) {
+                $path = $this->container['phpmig.migrations_path'];
+            }
+            if (isset($this->container['phpmig.sets']) && isset($this->container['phpmig.sets'][$set]['migrations_path'])) {
+                $path = $this->container['phpmig.sets'][$set]['migrations_path'];
+            }
         }
         $locator = new FileLocator(array());
         $path    = $locator->locate($path, getcwd(), $first = true);
