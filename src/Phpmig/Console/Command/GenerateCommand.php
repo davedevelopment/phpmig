@@ -86,10 +86,23 @@ EOT
                 $path
             ));
         }
-        
+
         $className = $this->migrationToClassName($migrationName);
 
-        $contents = <<<PHP
+        if (isset($this->container['phpmig.migrations_template_path'])) {
+            $migrationsTemplatePath = $this->container['phpmig.migrations_template_path'];
+            if (false === file_exists($migrationsTemplatePath)) {
+                throw new \RuntimeException(sprintf(
+                    'The template file "%s" not found',
+                    $migrationsTemplatePath
+                ));
+            }
+
+            ob_start();
+            include($migrationsTemplatePath);
+            $contents = ob_get_clean();
+        } else {
+            $contents = <<<PHP
 <?php
 
 use Phpmig\Migration\Migration;
@@ -114,7 +127,8 @@ class $className extends Migration
 }
 
 PHP;
-        
+        }
+
         if (false === file_put_contents($path, $contents)) {
             throw new \RuntimeException(sprintf(
                 'The file "%s" could not be written to',
