@@ -162,8 +162,23 @@ class Sql implements AdapterInterface
                     );
                 break;
 
-            case 'mysql':
             case 'pgsql':
+                $queries = array(
+
+                        'fetchAll'     => "SELECT \"version\" FROM \"{$this->tableName}\" ORDER BY \"version\" ASC",
+
+                        'up'           => "INSERT INTO \"{$this->tableName}\" VALUES (:version)",
+
+                        'down'         => "DELETE FROM \"{$this->tableName}\" WHERE \"version\" = :version",
+
+                        'hasSchema'    => "SELECT \"tablename\" FROM \"pg_tables\"",
+
+                        'createSchema' => "CREATE TABLE \"{$this->tableName}\" (\"version\" VARCHAR(255) NOT NULL)",
+
+                    );
+                break;
+
+            case 'mysql':
             default:
                 $queries = array(
 
