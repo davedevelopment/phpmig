@@ -42,6 +42,7 @@ class PhpmigApplication extends Application
             new Command\DownCommand(),
             new Command\MigrateCommand(),
             new Command\RollbackCommand(),
+            new Command\RedoCommand()
         ));
     }
 }
