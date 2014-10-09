@@ -261,6 +261,38 @@ class AddRatingToLolCats extends Migration
 }
 ```
 
+Customising the migration template
+-----------------------------------
+
+You can change the default migration template by providing the path to a file 
+in the `phpmig.migrations_template_path` config value. The migration is parsed 
+using the `sprintf` function, so the class name should be set to `%s` to 
+ensure it gets replaced: 
+
+```php
+<?php
+
+use Phpmig\Migration\Migration;
+
+class %s extends Migration
+{
+    /**
+     * Do the migration
+     */
+    public function up()
+    {
+        $container = $this->getContainer(); 
+    }
+
+    /**
+     * Undo the migration
+     */
+    public function down()
+    {
+        $container = $this->getContainer(); 
+    }
+}
+```
 
 Multi path migrations
 ---------------------
