@@ -98,16 +98,14 @@ EOT
                 ));
             }
 
-            ob_start();
-            include($migrationsTemplatePath);
-            $contents = ob_get_clean();
+            $contents = file_get_contents($migrationsTemplatePath);
         } else {
             $contents = <<<PHP
 <?php
 
 use Phpmig\Migration\Migration;
 
-class $className extends Migration
+class %s extends Migration
 {
     /**
      * Do the migration
@@ -128,6 +126,8 @@ class $className extends Migration
 
 PHP;
         }
+
+        $contents = sprintf($contents, $className);
 
         if (false === file_put_contents($path, $contents)) {
             throw new \RuntimeException(sprintf(
