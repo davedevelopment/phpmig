@@ -98,14 +98,21 @@ EOT
                 ));
             }
 
-            $contents = file_get_contents($migrationsTemplatePath);
+            if (preg_match('/\.php$/', $migrationsTemplatePath)) {
+                ob_start();
+                include($migrationsTemplatePath);
+                $contents = ob_get_clean();
+            } else {
+                $contents = file_get_contents($migrationsTemplatePath);
+                $contents = sprintf($contents, $className);
+            }
         } else {
             $contents = <<<PHP
 <?php
 
 use Phpmig\Migration\Migration;
 
-class %s extends Migration
+class $className extends Migration
 {
     /**
      * Do the migration
@@ -126,8 +133,6 @@ class %s extends Migration
 
 PHP;
         }
-
-        $contents = sprintf($contents, $className);
 
         if (false === file_put_contents($path, $contents)) {
             throw new \RuntimeException(sprintf(
