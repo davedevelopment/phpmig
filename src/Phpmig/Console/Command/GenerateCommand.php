@@ -98,9 +98,14 @@ EOT
                 ));
             }
 
-            ob_start();
-            include($migrationsTemplatePath);
-            $contents = ob_get_clean();
+            if (preg_match('/\.php$/', $migrationsTemplatePath)) {
+                ob_start();
+                include($migrationsTemplatePath);
+                $contents = ob_get_clean();
+            } else {
+                $contents = file_get_contents($migrationsTemplatePath);
+                $contents = sprintf($contents, $className);
+            }
         } else {
             $contents = <<<PHP
 <?php

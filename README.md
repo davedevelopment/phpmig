@@ -261,6 +261,69 @@ class AddRatingToLolCats extends Migration
 }
 ```
 
+Customising the migration template
+-----------------------------------
+
+You can change the default migration template by providing the path to a file 
+in the `phpmig.migrations_template_path` config value. If the template has a 
+`.php` extension it is included and parsed as PHP, and the `$className` variable 
+is replaced: 
+
+```php
+<?= "<?php ";?>
+
+use Phpmig\Migration\Migration;
+
+class <?= $className ?> extends Migration
+{
+    $someValue = <?= $this->container['value'] ?>; 
+
+    /**
+     * Do the migration
+     */
+    public function up()
+    {
+        $container = $this->getContainer();
+    }
+
+    /**
+     * Undo the migration
+     */
+    public function down()
+    {
+        $container = $this->getContainer();
+    }
+}
+```
+
+If it uses any other extension (e.g., `.stub` or `.tmpl`) it's parsed using the 
+`sprintf` function, so the class name should be set to `%s` to ensure it gets 
+replaced: 
+
+```php
+<?php
+
+use Phpmig\Migration\Migration;
+
+class %s extends Migration
+{
+    /**
+     * Do the migration
+     */
+    public function up()
+    {
+        $container = $this->getContainer(); 
+    }
+
+    /**
+     * Undo the migration
+     */
+    public function down()
+    {
+        $container = $this->getContainer(); 
+    }
+}
+```
 
 Multi path migrations
 ---------------------
