@@ -15,7 +15,9 @@ can use doctrine if you want. And ironically, I use doctrine in my examples.
 How does it work?
 -----------------
 
-    $ phpmig migrate
+```bash
+$ phpmig migrate
+```
 
 Phpmig aims to be vendor/framework independent, and in doing so, requires you to
 do a little bit of work up front to use it.
@@ -34,35 +36,41 @@ The best way to install phpmig and pimple is using composer. Start by creating
 or adding to your project's `composer.json` file:
 
 ``` JSON
-    {
-        "require": {
-            "php": ">=5.3.1",
-            "davedevelopment/phpmig": "*",
-            "pimple/pimple": "1.*"
-        },
+{
+    "require": {
+        "php": ">=5.3.1",
+        "davedevelopment/phpmig": "*",
+        "pimple/pimple": "1.*"
+    },
 
-        "config": {
-            "bin-dir": "bin/"
-        }
+    "config": {
+        "bin-dir": "bin/"
     }
+}
 ```
 
 Then download composer.phar and run install command
 
-    $ curl -sS https://getcomposer.org/installer | php
-    $ php composer.phar install
+```bash
+$ curl -sS https://getcomposer.org/installer | php
+$ php composer.phar install
+```
 
 You can then use the localised version of phpmig for that project
 
-    $ bin/phpmig --version
+```bash
+$ bin/phpmig --version
+```
 
 Phpmig can do a little configuring for you to get started, go to the root of
 your project and:
 
-    $ phpmig init
-    +d ./migrations Place your migration files in here
-    +f ./phpmig.php Create services in here
-    $ 
+```bash
+$ phpmig init
++d ./migrations Place your migration files in here
++f ./phpmig.php Create services in here
+$ 
+```
 
 Note that you can move phpmig.php to config/phpmig.php, the commands will look
 first in the config directory than in the root.
@@ -72,26 +80,27 @@ versionnumber_name.php, where version number is made up of 0-9 and name is
 CamelCase or snake\_case. Each migration file should contain a class with the
 same name as the file in CamelCase.
 
-    $ phpmig generate AddRatingToLolCats
-    +f ./migrations/20111018171411_AddRatingToLolCats.php
-    $ phpmig status
+```bash
+$ phpmig generate AddRatingToLolCats
++f ./migrations/20111018171411_AddRatingToLolCats.php
+$ phpmig status
 
-     Status   Migration ID    Migration Name 
-    -----------------------------------------
-       down  20111018171929  AddRatingToLolCats
+ Status   Migration ID    Migration Name 
+-----------------------------------------
+   down  20111018171929  AddRatingToLolCats
 
 Use the migrate command to run migrations
 
-    $ phpmig migrate
-     == 20111018171411 AddRatingToLolCats migrating
-     == 20111018171411 AddRatingToLolCats migrated 0.0005s
-    $ phpmig status
+$ phpmig migrate
+ == 20111018171411 AddRatingToLolCats migrating
+ == 20111018171411 AddRatingToLolCats migrated 0.0005s
+$ phpmig status
 
-     Status   Migration ID    Migration Name 
-    -----------------------------------------
-         up  20111018171929  AddRatingToLolCats
-
-    $
+ Status   Migration ID    Migration Name 
+-----------------------------------------
+     up  20111018171929  AddRatingToLolCats
+$ 
+```
 
 Better Persistence
 ------------------
@@ -157,7 +166,7 @@ $container['phpmig.migrations_path'] = function() {
     return __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
 };
 
-return $container;   
+return $container;
 ```
 
 Unfortunately Zend Framework does not have a Database Abstraction Layer and
@@ -341,39 +350,49 @@ $container['phpmig.migrations'] = function() {
         glob('migrations_2/*.php')
     );
 };
-
 ```
 
 You can then provide a target directory to the generate command. The target
 directory is mandatory if you haven't provided a `phpmig.migrations_path` config
 value.
 
-    $ phpmig generate AddRatingToLolCats ./migrations
-
+```bash
+$ phpmig generate AddRatingToLolCats ./migrations
+```
 
 Rolling Back
 ------------
 
 You can roll back the last run migration by using the rollback command
 
-    $ phpmig rollback
+```bash
+$ phpmig rollback
+```
 
 To rollback all migration up to a specific migration you can specify the
 rollback target
 
-    $ phpmig rollback -t 20111101000144
+```bash
+$ phpmig rollback -t 20111101000144
+```
 
 or
 
-    $ phpmig rollback --target=20111101000144
+```bash
+$ phpmig rollback --target=20111101000144
+```
 
 By specifying 0 as the rollback target phpmig will revert all migrations 
 
-    $ phpmig rollback -t 0
+```bash
+$ phpmig rollback -t 0
+```
 
 You can also rollback only a specific migration using the down command
 
-    $ phpmig down 20111101000144
+```bash
+$ phpmig down 20111101000144
+```
 
 Todo
 ----
