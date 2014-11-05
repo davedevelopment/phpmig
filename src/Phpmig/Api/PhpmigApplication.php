@@ -5,6 +5,7 @@
  */
 namespace Phpmig\Api;
 
+use Phpmig\Migration;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -13,9 +14,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Usage:
  * <code>
  * $container = include_once "/full/path/to/phpmig.php";
- * $phpmig = new \Phpmig\Api\PhpmigApplication($container);
+ * $output = new Symfony\Component\Console\Output\OutputInterface\BufferedOutput;
+ * $phpmig = new Phpmig\Api\PhpmigApplication($container, $output);
  * $phpmig->up(); // upgrade to latest version
- * echo $phpmig->output(); // fetch output
+ * echo $output->output(); // fetch output
  * </code>
  *
  * @author      Cody Phillips
@@ -62,6 +64,9 @@ class PhpmigApplication
      */
     public function down($version = 0)
     {
+        if ($version === null || $version < 0)
+            throw new \InvalidArgumentException("Invalid version given, expected  >= 0.");
+            
         foreach ($this->getMigrations($this->getVersion(), $version) as $migration) {
             $this->container['phpmig.migrator']->down($migration);
         }

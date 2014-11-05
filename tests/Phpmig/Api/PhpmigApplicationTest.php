@@ -10,30 +10,56 @@ use Symfony\Component\Console\Output;
  */
 class PhpmigApplicationTest extends \PHPUnit_Framework_TestCase
 {
-    protected $object;
+    private $app;
+    private $prev_version = '20141104210000';
+    private $current_version = '20141104220000';
+    private $next_version = '20141104230000';
+    private $output;
     
     public function setup()
     {
-        $this->container = array(
-            'phpmig.adapter' => new \stdClass(), // mock adapter
-            'phpmig.migrations' => "",
-            'phpmig.migrations_path' => ""
-        );
-        
         $this->output = new Output\NullOutput();
-        #
-        # TODO:
-        #
-        //$this->object = new PhpmigApplication($this->container, $this->output);
+        
+        $this->app = new PhpmigApplication(
+            $this->getContainer(
+                $this->getAdapter(array($this->current_version)),
+                $this->getMigrations(),
+                '**.php'
+            ),
+            $this->output
+        );
+    }
+    
+    protected function getAdapter(array $versions = array())
+    {
+        $adapter = $this->getMock('Phpmig\Adapter\AdapterInterface');
+        $adapter->expects($this->any())
+            ->method('fetchAll')
+            ->will($this->returnValue($versions));
+        return $adapter;
+    }
+    
+    protected function getContainer($adapter, $migrations, $migrations_path)
+    {
+        return new \ArrayObject(array(
+            'phpmig.adapter' => $adapter,
+            'phpmig.migrations' => $migrations,
+            'phpmig.migrations_path' => $migrations_path
+        ));
+    }
+    
+    protected function getMigrations()
+    {
+        return array(
+            $this->prev_version . "_TestOne.php",
+            $this->current_version . "_TestTwo.php",
+            $this->next_version . "_TestThree.php"
+        );
     }
     
     public function test__construct()
     {
-        #
-        # TODO:
-        #
-        $this->markTestIncomplete('TODO');
-        //$this->assertInstanceOf("PhpmigApplication", new PhpmigApplication($this->container, $this->output));
+        $this->assertInstanceOf("Phpmig\Api\PhpmigApplication", $this->app);
     }
     
     public function testUp()
@@ -54,17 +80,22 @@ class PhpmigApplicationTest extends \PHPUnit_Framework_TestCase
     
     public function testGetMigrations()
     {
-        #
-        # TODO:
-        #
-        $this->markTestIncomplete('TODO');
+        //$this->assertCount(2, $this->object->getMigrations($this->prev_version, $this->next_version));
     }
     
     public function testGetVersion()
     {
-        #
-        # TODO:
-        #
-        $this->markTestIncomplete('TODO');
+        $this->assertEquals($this->current_version, $this->app->getVersion());
+        
+        $app = new PhpmigApplication(
+            $this->getContainer(
+                $this->getAdapter(),
+                array(),
+                '**.php'
+            ),
+            $this->output
+        );
+        
+        $this->assertEquals(0, $app->getVersion());
     }
 }
