@@ -32,7 +32,8 @@ class PhpmigApplication
     {
         $this->container = $container;
         $this->output = $output;
-        $this->container['phpmig.migrator'] = new Migration\Migrator($container['phpmig.adapter'], $this->container, $this->output);
+        if (!isset($this->container['phpmig.migrator']))
+            $this->container['phpmig.migrator'] = new Migration\Migrator($container['phpmig.adapter'], $this->container, $this->output);
         
         $migrations = array();
         if (isset($this->container['phpmig.migrations'])) {
@@ -103,7 +104,7 @@ class PhpmigApplication
                     $migrations[] = $path;
                 }
             // down
-            } elseif ($to < $from && $version >= $to && $version <= $from) {
+            } elseif ($to < $from && $version > $to && $version <= $from) {
                 $migrations[] = $path;
             }
         }
