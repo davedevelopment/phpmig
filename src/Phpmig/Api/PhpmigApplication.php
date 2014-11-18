@@ -38,16 +38,11 @@ class PhpmigApplication
         $migrations = array();
         if (isset($this->container['phpmig.migrations'])) {
             $migrations = $this->container['phpmig.migrations'];
-            foreach ($migrations as &$migration) {
-                $migration = realpath($migration);
-            }
-            unset($migration);
         }
         if (isset($this->container['phpmig.migrations_path'])) {
             $migrationsPath = realpath($this->container['phpmig.migrations_path']);
             $migrations = array_merge($migrations, glob($migrationsPath . DIRECTORY_SEPARATOR . '*.php'));
         }
-        
         $this->migrations = array_unique($migrations);
     }
     
