@@ -123,6 +123,33 @@ return $container;
 
 ```
 
+### Postgres PDO `SqlPgsql` 
+Adds support for qualifying the migrations table with a schema.
+
+```php
+<?php
+
+# phpmig
+
+use \Phpmig\Adapter,
+    \Pimple;
+
+$container = new Pimple();
+
+$container['db'] = $container->share(function() {
+    $dbh = new PDO(sprintf('pgsql:dbname=%s;host=%s;password=%s', 'dbname', 'localhost', 'password'), 'dbuser', '');
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    return $dbh;
+});
+
+$container['phpmig.adapter'] = $container->share(function() use ($container) {
+    return new Adapter\PDO\SqlPgsql($container['db'], 'migrations', 'migrationschema');
+});	
+
+return $container;
+```
+
+
 
 Or you can use Doctrine's DBAL:
 
