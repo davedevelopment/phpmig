@@ -284,6 +284,62 @@ value.
 
     $ phpmig generate AddRatingToLolCats ./migrations
 
+Multi path migrations with 'glyph decoration' on status    
+-------------------------------------------------------
+
+In addition to specifcying multiple migrations paths, you can decorate the status of each migration based on its path. This additional information/feedback is known as a glyph (although it does not have to be restricted to a single character).  
+
+Glyph decoration is optional and controlled by the `phpmig.glyphs` config and the `phpmig.glyphs.maxlength` config (which controls formatting length of the glyph).
+
+Adding the following to your phpmig.php.
+
+    // $container['phpmig.migrations_path'] = __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
+    
+    // You can also provide an array of migration files
+    $container['phpmig.migrations'] = function () use ($container) {
+        return array_merge(
+            glob('migrations/*.php'),
+            glob('migrations.client/*.php')
+        );
+    };
+    
+    // Using full words to describe the migration's path.
+    $container['phpmig.glyphs.maxlength'] = 7;
+    $container['phpmig.glyphs'] = $container->protect(function ($migration) use ($container) {
+    
+        $glyph = "?";
+        foreach ($container['phpmig.migrations'] as $m) {
+            $position = strpos($m, $migration->getVersion());
+            if ($position !== false) {
+                switch (substr($m, 0, $position)) {
+                    case 'migrations/':
+                        $glyph = 'App';
+                        break;
+                    case 'migrations.client/':
+                        $glyph = 'Client';
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        return $glyph;
+    });
+
+Generate 2 migrations in separate paths. In this example the distinction is made between application migrations and client specific migrations.
+
+
+    $ phpmig generate SetupApp migrations
+    $ phpmig generate ConfigureClient migrations.client
+
+Running phpmig status now shows the glyph of each migration.
+
+    $ phpmig status
+
+     Status   Migration ID           Migration Name 
+    ------------------------------------------------
+       down  20141207141716     App SetupApp
+       down  20141207141735  Client ConfigureClient
 
 Rolling Back
 ------------

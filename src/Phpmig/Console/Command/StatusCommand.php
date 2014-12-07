@@ -48,9 +48,17 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->bootstrap($input, $output);
+        $container = $this->getContainer();
+
+        $glyphMaxLength = 0;
+
+        if (isset($container['phpmig.glyphs']) && isset($container['phpmig.glyphs.maxlength']) && is_numeric($container['phpmig.glyphs.maxlength'])) {
+            $glyphMaxLength = $container['phpmig.glyphs.maxlength'];
+        }
+
         $output->writeln("");
-        $output->writeln(" Status   Migration ID    Migration Name ");
-        $output->writeln("-----------------------------------------");
+        $output->writeln(" Status   Migration ID    " . str_pad('', $glyphMaxLength, ' ') . "Migration Name ");
+        $output->writeln("--------------------------" . str_pad('', $glyphMaxLength, '-') . "---------------");
 
         $versions = $this->getAdapter()->fetchAll();
         foreach($this->getMigrations() as $migration) {
@@ -62,9 +70,15 @@ EOT
                 $status = "   <error>down</error> ";
             }
 
+            $glyph = '';
+            if (isset($container['phpmig.glyphs'])) {
+                $glyph = sprintf("%" . $glyphMaxLength . "s", $container['phpmig.glyphs']($migration));
+            }
+
             $output->writeln(
                 $status . 
                 sprintf(" %14s ", $migration->getVersion()) . 
+                $glyph .
                 " <comment>" . $migration->getName() . "</comment>"
             );
         }
