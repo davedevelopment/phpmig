@@ -10,6 +10,7 @@ use Phpmig\Migration\Migration;
 use Phpmig\Migration\Migrator;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -56,6 +57,7 @@ abstract class AbstractCommand extends Command
     protected function configure()
     {
         $this->addOption('--bootstrap', '-b', InputOption::VALUE_REQUIRED, 'The bootstrap file to load');
+        $this->addOption('--propertyfile', '-p', InputArgument::OPTIONAL, 'The custom properties file to load');
     }
 
     /**
@@ -68,6 +70,13 @@ abstract class AbstractCommand extends Command
         $this->setBootstrap($this->findBootstrapFile($input->getOption('bootstrap')));
 
         $container = $this->bootstrapContainer();
+
+        $helper = new \Phpmig\Utility\Helper();
+        $propertyFile = $helper->findPropertiesFile($input->getOption('propertyfile'));
+        $container['properties'] = function () use ($helper, $propertyFile) {
+            return $helper->getProperties($propertyFile);
+        };
+
         $this->setContainer($container);
         $this->setAdapter($this->bootstrapAdapter());
 
