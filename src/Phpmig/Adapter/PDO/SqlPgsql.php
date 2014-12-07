@@ -99,6 +99,17 @@ class SqlPgsql extends Sql
      */
     public function createSchema()
     {
+        $sql = sprintf("SELECT schema_name FROM {$this->quote}information_schema{$this->quote}.{$this->quote}schemata{$this->quote} WHERE schema_name = '%s';",
+            $this->schemaName);
+        $pgSchemas = $this->connection->exec($sql);
+
+        if (empty($pgSchemas)) {
+            $sql = sprintf("CREATE SCHEMA %s;", $this->schemaName);
+            if (FALSE === $this->connection->exec($sql)) {
+                $e = $this->connection->errorInfo();
+            }
+        }
+
         $sql = "CREATE table {$this->quotedTableName()} (version %s NOT NULL, {$this->quote}migrate_date{$this->quote} timestamp(6) WITH TIME ZONE DEFAULT now())";
         $driver = $this->connection->getAttribute(PDO::ATTR_DRIVER_NAME);
         $sql = sprintf($sql, in_array($driver, array('mysql', 'pgsql')) ? 'VARCHAR(255)' : '');
