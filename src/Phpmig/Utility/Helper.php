@@ -3,8 +3,9 @@ namespace Phpmig\Utility;
 
 use Symfony\Component\Config\FileLocator;
 
-class Helper
-{
+class Helper {
+
+    protected $properties = null;
 
     /**
      * @param string $filename
@@ -26,7 +27,15 @@ class Helper
         return $locator->locate($filename);
     }
 
-    function getProperties($propertiesFile)
+    function getProperties($propertiesFile) {
+        if($this->properties == null ) {
+            $this->properties = $this->loadPropertiesFile($propertiesFile);
+        }
+        return $this->properties;
+    }
+
+
+    function loadPropertiesFile($propertiesFile)
     {
         $directory = getcwd();
 
