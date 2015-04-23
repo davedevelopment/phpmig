@@ -69,4 +69,9 @@ class MigrationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(123, $this->migration->get('service'));
     }
 
+    public function testMigrationVersion()
+    {
+        $this->assertEquals(1, $this->migration->getVersion());
+    }
+
 }
