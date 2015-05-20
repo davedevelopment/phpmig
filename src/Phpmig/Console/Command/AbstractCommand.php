@@ -218,6 +218,14 @@ abstract class AbstractCommand extends Command
             }
             $class = $this->migrationToClassName($migrationName);
 
+            if ($input->getArgument('command') == 'generate'
+                && $class == $this->migrationToClassName($input->getArgument('name'))) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Migration Class "%s" is already exists',
+                    $class
+                ));
+            }
+
             if (isset($names[$class])) {
                 throw new \InvalidArgumentException(sprintf(
                     'Migration "%s" has the same name as "%s"',
