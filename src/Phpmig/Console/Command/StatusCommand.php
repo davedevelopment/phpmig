@@ -72,7 +72,7 @@ EOT
         foreach($versions as $missing) {
             $output->writeln(
                 '   <error>up</error> ' . 
-                sprintf(" %14d ", $missing) . 
+                sprintf(" %14s ", $missing) . 
                 ' <error>** MISSING **</error> '
             );
         }
