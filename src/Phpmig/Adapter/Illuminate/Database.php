@@ -42,7 +42,7 @@ class Database implements AdapterInterface
             ->get();
 
         return array_map(function($v) {
-            return $v['version'];
+            return $v->version;
         }, $all);
     }
 

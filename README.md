@@ -69,7 +69,7 @@ your project and:
 $ phpmig init
 +d ./migrations Place your migration files in here
 +f ./phpmig.php Create services in here
-$ 
+$
 ```
 
 Note that you can move phpmig.php to config/phpmig.php, the commands will look
@@ -85,7 +85,7 @@ $ phpmig generate AddRatingToLolCats
 +f ./migrations/20111018171411_AddRatingToLolCats.php
 $ phpmig status
 
- Status   Migration ID    Migration Name 
+ Status   Migration ID    Migration Name
 -----------------------------------------
    down  20111018171929  AddRatingToLolCats
 
@@ -96,10 +96,10 @@ $ phpmig migrate
  == 20111018171411 AddRatingToLolCats migrated 0.0005s
 $ phpmig status
 
- Status   Migration ID    Migration Name 
+ Status   Migration ID    Migration Name
 -----------------------------------------
      up  20111018171929  AddRatingToLolCats
-$ 
+$
 ```
 
 Better Persistence
@@ -135,7 +135,7 @@ return $container;
 
 ```
 
-### Postgres PDO `SqlPgsql` 
+### Postgres PDO `SqlPgsql`
 Adds support for qualifying the migrations table with a schema.
 
 ```php
@@ -156,7 +156,7 @@ $container['db'] = $container->share(function() {
 
 $container['phpmig.adapter'] = $container->share(function() use ($container) {
     return new Adapter\PDO\SqlPgsql($container['db'], 'migrations', 'migrationschema');
-});	
+});
 
 return $container;
 ```
@@ -173,7 +173,7 @@ Or you can use Doctrine's DBAL:
 // do some autoloading of Doctrine here
 
 use \Phpmig\Adapter,
-    \Pimple, 
+    \Pimple,
     \Doctrine\DBAL\DriverManager;
 
 $container = new Pimple();
@@ -261,6 +261,48 @@ $container['phpmig.migrations_path'] = function() {
 return $container;
 ```
 
+Example with Eloquent ORM 5.1
+------------------
+```php
+<?php
+
+use \Phpmig\Adapter;
+use \Phpmig\Pimple\Pimple,
+    \Illuminate\Database\Capsule\Manager as Capsule;
+
+$container = new Pimple();
+
+$container['config'] = [
+    'driver'    => 'xxx',
+    'host'      => 'xxx',
+    'database'  => 'xxx',
+    'username'  => 'xxx',
+    'password'  => 'x',
+    'charset'   => 'xxx',
+    'collation' => 'xxx',
+    'prefix'    => '',
+];
+
+$container['db'] = $container->share(function() use ($container) {
+    $capsule = new Capsule();
+    $capsule->addConnection($container['config']);
+    $capsule->setAsGlobal();
+    $capsule->bootEloquent();
+
+   return $capsule;
+});
+
+$container['phpmig.adapter'] = $container->share(function() use ($container) {
+    return new Adapter\Illuminate\Database($container['db'], 'migrations');
+});
+$container['phpmig.migrations_path'] = function() {
+    return __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
+};
+
+return $container;
+```
+
+
 Writing Migrations
 ------------------
 
@@ -281,7 +323,7 @@ class AddRatingToLolCats extends Migration
     public function up()
     {
         $sql = "ALTER TABLE `lol_cats` ADD COLUMN `rating` INT(10) UNSIGNED NULL";
-        $container = $this->getContainer(); 
+        $container = $this->getContainer();
         $container['db']->query($sql);
     }
 
@@ -291,7 +333,7 @@ class AddRatingToLolCats extends Migration
     public function down()
     {
         $sql = "ALTER TABLE `lol_cats` DROP COLUMN `rating`";
-        $container = $this->getContainer(); 
+        $container = $this->getContainer();
         $container['db']->query($sql);
     }
 }
@@ -300,10 +342,10 @@ class AddRatingToLolCats extends Migration
 Customising the migration template
 -----------------------------------
 
-You can change the default migration template by providing the path to a file 
-in the `phpmig.migrations_template_path` config value. If the template has a 
-`.php` extension it is included and parsed as PHP, and the `$className` variable 
-is replaced: 
+You can change the default migration template by providing the path to a file
+in the `phpmig.migrations_template_path` config value. If the template has a
+`.php` extension it is included and parsed as PHP, and the `$className` variable
+is replaced:
 
 ```php
 <?= "<?php ";?>
@@ -312,7 +354,7 @@ use Phpmig\Migration\Migration;
 
 class <?= $className ?> extends Migration
 {
-    $someValue = <?= $this->container['value'] ?>; 
+    $someValue = <?= $this->container['value'] ?>;
 
     /**
      * Do the migration
@@ -332,9 +374,9 @@ class <?= $className ?> extends Migration
 }
 ```
 
-If it uses any other extension (e.g., `.stub` or `.tmpl`) it's parsed using the 
-`sprintf` function, so the class name should be set to `%s` to ensure it gets 
-replaced: 
+If it uses any other extension (e.g., `.stub` or `.tmpl`) it's parsed using the
+`sprintf` function, so the class name should be set to `%s` to ensure it gets
+replaced:
 
 ```php
 <?php
@@ -348,7 +390,7 @@ class %s extends Migration
      */
     public function up()
     {
-        $container = $this->getContainer(); 
+        $container = $this->getContainer();
     }
 
     /**
@@ -356,7 +398,7 @@ class %s extends Migration
      */
     public function down()
     {
-        $container = $this->getContainer(); 
+        $container = $this->getContainer();
     }
 }
 ```
@@ -409,7 +451,7 @@ or
 $ phpmig rollback --target=20111101000144
 ```
 
-By specifying 0 as the rollback target phpmig will revert all migrations 
+By specifying 0 as the rollback target phpmig will revert all migrations
 
 ```bash
 $ phpmig rollback -t 0
@@ -430,7 +472,7 @@ Todo
 * Adapters for Zend\_Db and/or Zend\_Db\_Table and others?
 * Redo and rollback commands
 * Tests!
-* Configuration? 
+* Configuration?
 * Someway of protecting against class definition clashes with regard to the
   symfony dependencies and the user supplied bootstrap?
 
