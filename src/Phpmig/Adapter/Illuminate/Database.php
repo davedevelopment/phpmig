@@ -5,8 +5,10 @@
  */
 namespace Phpmig\Adapter\Illuminate;
 
+use PDO;
 use \Phpmig\Migration\Migration,
     \Phpmig\Adapter\AdapterInterface;
+use RuntimeException;
 
 /**
  * @author Andrew Smith http://github.com/silentworks
@@ -36,13 +38,27 @@ class Database implements AdapterInterface
      */
     public function fetchAll()
     {
+        $fetchMode = $this->adapter->connection()
+            ->getFetchMode();
+
         $all = $this->adapter->connection()
             ->table($this->tableName)
             ->orderBy('version')
             ->get();
 
-        return array_map(function($v) {
-            return $v['version'];
+        return array_map(function($v) use($fetchMode) {
+
+            switch ($fetchMode) {
+
+                case PDO::FETCH_OBJ:
+                    return $v->version;
+
+                case PDO::FETCH_ASSOC:
+                    return $v['version'];
+
+                default:
+                    throw new RuntimeException("The PDO::FETCH_* constant {$fetchMode} is not supported");
+            }
         }, $all);
     }
 
