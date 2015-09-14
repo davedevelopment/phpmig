@@ -421,6 +421,29 @@ You can also rollback only a specific migration using the down command
 $ phpmig down 20111101000144
 ```
 
+Using Outside CLI
+-----------------
+In order to use the migration tool outside the cli context use `Phpmig\Api\PhpmigApplication`.
+
+```php
+<?php
+
+use Phpmig\Api\PhpmigApplication;
+
+// require the composer autoloader
+require __DIR__ . "/vendor/autoload.php";
+
+$output = new \Symfony\Component\Console\Output\NullOutput();
+
+// create container from bootstrap file
+$container = require __DIR__ . "/tests/dom/phpmig.php";
+
+$app = new PhpmigApplication($container, $output);
+
+// run the migrations
+$app->up();
+```
+
 Todo
 ----
 
