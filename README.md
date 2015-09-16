@@ -261,6 +261,48 @@ $container['phpmig.migrations_path'] = function() {
 return $container;
 ```
 
+Example with Eloquent ORM 5.1
+------------------
+```php
+<?php
+
+use \Phpmig\Adapter;
+use \Phpmig\Pimple\Pimple,
+    \Illuminate\Database\Capsule\Manager as Capsule;
+
+$container = new Pimple();
+
+$container['config'] = [
+    'driver'    => 'xxx',
+    'host'      => 'xxx',
+    'database'  => 'xxx',
+    'username'  => 'xxx',
+    'password'  => 'x',
+    'charset'   => 'xxx',
+    'collation' => 'xxx',
+    'prefix'    => '',
+];
+
+$container['db'] = $container->share(function() use ($container) {
+    $capsule = new Capsule();
+    $capsule->addConnection($container['config']);
+    $capsule->setAsGlobal();
+    $capsule->bootEloquent();
+
+   return $capsule;
+});
+
+$container['phpmig.adapter'] = $container->share(function() use ($container) {
+    return new Adapter\Illuminate\Database($container['db'], 'migrations');
+});
+$container['phpmig.migrations_path'] = function() {
+    return __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
+};
+
+return $container;
+```
+
+
 Writing Migrations
 ------------------
 
