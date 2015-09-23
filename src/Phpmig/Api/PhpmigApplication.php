@@ -58,6 +58,11 @@ class PhpmigApplication
      */
     public function up($version = null)
     {
+        if (array_key_exists('phpmig.adapter', $this->container) && ! $this->container['phpmig.adapter']->hasSchema()) {
+            
+            $this->container['phpmig.adapter']->createSchema();
+        }
+
         foreach ($this->getMigrations($this->getVersion(), $version) as $migration) {
             $this->container['phpmig.migrator']->up($migration);
         }
