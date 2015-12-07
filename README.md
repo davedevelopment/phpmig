@@ -32,28 +32,11 @@ abstraction][doctrineschemamanager].
 Getting Started
 ---------------
 
-The best way to install phpmig and pimple is using composer. Start by creating
-or adding to your project's `composer.json` file:
-
-``` JSON
-{
-    "require": {
-        "php": ">=5.3.1",
-        "davedevelopment/phpmig": "*",
-        "pimple/pimple": "1.*"
-    },
-
-    "config": {
-        "bin-dir": "bin/"
-    }
-}
-```
-
-Then download composer.phar and run install command
+The best way to install phpmig is using composer:
 
 ```bash
 $ curl -sS https://getcomposer.org/installer | php
-$ php composer.phar install
+$ php composer.phar require davedevelopment/phpmig
 ```
 
 You can then use the localised version of phpmig for that project
@@ -502,9 +485,9 @@ Todo
 Contributing
 ------------
 
-Feel free to fork and send me pull requests, but I don't have a 1.0 release yet,
-so I may change the API quite frequently. If you want to implement something
-that I might easily break, please drop me an email
+Feel free to fork and send me pull requests, I try and keep the tool really
+basic, if you want to start adding tons of features to phpmig, I'd recommend
+taking a look at [robmorgan/phinx](https://github.com/robmorgan/phinx).
 
 Inspiration
 -----------
