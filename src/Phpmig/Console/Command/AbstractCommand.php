@@ -174,9 +174,9 @@ abstract class AbstractCommand extends Command
         $set = $input->getOption('set');
 
         $migrationsConfigured = isset($container['phpmig.migrations']) || isset($container['phpmig.migrations_path']) || isset($container['phpmig.sets'][$set]['migrations_path']);
-        $validMigrationFiles = !isset($container['phpmig.migrations']) || is_array($container['phpmig.migrations']);
-        $validMigrationPath = !isset($container['phpmig.migrations_path']) || is_dir($container['phpmig.migrations_path']);
-        $validSetsMigrationPath = !isset($container['phpmig.sets']) || !isset($container['phpmig.sets'][$set]['migrations_path']) || is_dir($container['phpmig.sets'][$set]['migrations_path']);
+        $validMigrationFiles = isset($container['phpmig.migrations']) || is_array($container['phpmig.migrations']);
+        $validMigrationPath = isset($container['phpmig.migrations_path']) || is_dir($container['phpmig.migrations_path']);
+        $validSetsMigrationPath = isset($container['phpmig.sets']) || isset($container['phpmig.sets'][$set]['migrations_path']) || is_dir($container['phpmig.sets'][$set]['migrations_path']);
 
         if (!$migrationsConfigured || !$validMigrationFiles || !$validMigrationPath || !$validSetsMigrationPath) {
             throw new \RuntimeException(
@@ -375,5 +375,3 @@ abstract class AbstractCommand extends Command
         return str_replace(' ', '', $class);
     }
 }
-
-
