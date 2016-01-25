@@ -393,16 +393,16 @@ If you have an application that consists of different modules and you want to be
 
 ``` php
 $container['phpmig.sets'] = $container->share(function ($container) {
-    return [
-        'cms' => [
+    return array(
+        'cms' => array(
             'adapter' => new Adapter\File\Flat('modules/migrationLogs/cms_migrations.log'),
             'migrations_path' => 'migrations/cms'
-        ],
-        'blog' => [
+        ),
+        'blog' => array(
             'adapter' => new Adapter\File\Flat('modules/migrationLogs/blog_migrations.log'),
             'migrations_path' => 'migrations/blog'
-        ]
-    ];
+        )
+    );
 });
 ```
 
