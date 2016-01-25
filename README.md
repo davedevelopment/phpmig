@@ -394,7 +394,7 @@ If you have an application that consists of different modules and you want to be
 ``` php
 $container['phpmig.sets'] = $container->share(function ($container) {
     return [
-        'cms => [
+        'cms' => [
             'adapter' => new Adapter\File\Flat('modules/migrationLogs/cms_migrations.log'),
             'migrations_path' => 'migrations/cms'
         ],
