@@ -386,6 +386,48 @@ class %s extends Migration
 }
 ```
 
+Module Migrations
+---------------------
+
+If you have an application that consists of different modules and you want to be able to separate the migration, Phpmig has a built-in way to achieve this.
+
+``` php
+$container['phpmig.sets'] = $container->share(function ($container) {
+    return array(
+        'cms' => array(
+            'adapter' => new Adapter\File\Flat('modules/migrationLogs/cms_migrations.log'),
+            'migrations_path' => 'migrations/cms'
+        ),
+        'blog' => array(
+            'adapter' => new Adapter\File\Flat('modules/migrationLogs/blog_migrations.log'),
+            'migrations_path' => 'migrations/blog'
+        )
+    );
+});
+```
+
+this way each set has their own migration log and the ability to migrate changes independently of each other.
+
+to run the set migration you just use the command below:
+
+```bash
+$ phpmig up -s <SET NAME HERE> --<VERSION HERE>
+```
+
+For example, if a change was made to the cms migration, you'll type in this command:
+
+```bash
+$ phpmig up -s cms --2
+```
+
+and the migration tool will run the migration setup for cms.
+
+to downgrade a migration would be:
+
+```bash
+$ phpmig down -s <SET NAME HERE> --<VERSION HERE>
+```
+
 Multi path migrations
 ---------------------
 
