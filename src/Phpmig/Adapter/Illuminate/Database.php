@@ -21,13 +21,13 @@ class Database implements AdapterInterface
     protected $tableName;
 
     /**
-     * @var \Illuminate\Database\Capsule\Manager
+     * @var \Illuminate\Database\Connection
      */
     protected $adapter;
 
-    public function __construct($adapter, $tableName)
+    public function __construct($adapter, $tableName, $connectionName = '')
     {
-        $this->adapter = $adapter;
+        $this->adapter = $adapter->connection($connectionName);
         $this->tableName = $tableName;
     }
 
@@ -38,10 +38,10 @@ class Database implements AdapterInterface
      */
     public function fetchAll()
     {
-        $fetchMode = $this->adapter->connection()
+        $fetchMode = $this->adapter
             ->getFetchMode();
 
-        $all = $this->adapter->connection()
+        $all = $this->adapter
             ->table($this->tableName)
             ->orderBy('version')
             ->get();
@@ -70,7 +70,7 @@ class Database implements AdapterInterface
      */
     public function up(Migration $migration)
     {
-        $this->adapter->connection()
+        $this->adapter
             ->table($this->tableName)
             ->insert(array(
                 'version' => $migration->getVersion()
@@ -87,7 +87,7 @@ class Database implements AdapterInterface
      */
     public function down(Migration $migration)
     {
-        $this->adapter->connection()
+        $this->adapter
             ->table($this->tableName)
             ->where('version', $migration->getVersion())
             ->delete();
@@ -102,7 +102,7 @@ class Database implements AdapterInterface
      */
     public function hasSchema()
     {
-        return $this->adapter->schema()->hasTable($this->tableName);
+        return $this->adapter->getSchemaBuilder()->hasTable($this->tableName);
     }
 
     /**
@@ -113,7 +113,7 @@ class Database implements AdapterInterface
     public function createSchema()
     {
         /* @var \Illuminate\Database\Schema\Blueprint $table */
-        $this->adapter->schema()->create($this->tableName, function ($table) {
+        $this->adapter->getSchemaBuilder()->create($this->tableName, function ($table) {
             $table->string('version');
         });
     }
