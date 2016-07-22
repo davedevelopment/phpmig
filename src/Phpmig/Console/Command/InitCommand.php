@@ -5,6 +5,7 @@
  */
 namespace Phpmig\Console\Command;
 
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -30,11 +31,14 @@ class InitCommand extends AbstractCommand
     protected function configure()
     {
         $this->setName('init')
+             ->addArgument('template', InputArgument::OPTIONAL, 'Template for bootstrap file')
              ->setDescription('Initialise this directory for use with phpmig')
              ->setHelp(<<<EOT
-The <info>init</info> command creates a skeleton bootstrap file and a migrations directory
+The <info>init</info> command creates a skeleton bootstrap file and a migrations directory.
+Bootstrap template can be specified in argument.
 
 <info>phpmig init</info>
+<info>phpmig init bootstrapTemplateName</info>
 
 EOT
         );
@@ -49,9 +53,10 @@ EOT
         $bootstrap = $cwd . DIRECTORY_SEPARATOR . 'phpmig.php';
         $relative = 'migrations';
         $migrations = $cwd . DIRECTORY_SEPARATOR . $relative;
+        $template = $input->getArgument('template');
 
         $this->initMigrationsDir($migrations, $output);
-        $this->initBootstrap($bootstrap, $relative, $output);
+        $this->initBootstrap($bootstrap, $relative, $output, $template);
     }
 
     /**
@@ -89,7 +94,7 @@ EOT
      * @param string $migrations path to migrations dir relative to bootstrap
      * @return void
      */
-    protected function initBootstrap($bootstrap, $migrations, OutputInterface $output)
+    protected function initBootstrap($bootstrap, $migrations, OutputInterface $output, $template)
     {
         if (file_exists($bootstrap)) {
             $output->writeln(
@@ -104,7 +109,37 @@ EOT
             throw new \RuntimeException(sprintf('The file "%s" is not writeable', $bootstrap));
         }
 
-        $contents = <<<PHP
+        switch ($template) {
+            case 'bitrix':
+                $contents = <<<PHP
+<?php
+define('NO_KEEP_STATISTIC', true);
+define('NOT_CHECK_PERMISSIONS', true);
+define('BX_NO_ACCELERATOR_RESET', true);
+define('NO_AGENT_CHECK', true);
+\$_SERVER['DOCUMENT_ROOT'] = dirname(__DIR__);
+require_once \$_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/main/include/prolog_before.php';
+
+use Bitrix\Main\Application;
+use Phpmig\Adapter;
+
+\$container = new ArrayObject();
+
+\$container['phpmig.adapter'] = new Adapter\Bitrix\Database(Application::getInstance()->getConnection(), 'migrations');
+
+\$container['phpmig.migrations_path'] = __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
+
+// You can also provide an array of migration files
+// \$container['phpmig.migrations'] = array_merge(
+//     glob('migrations_1/*.php'),
+//     glob('migrations_2/*.php')
+// );
+
+return \$container;
+PHP;
+                break;
+            default:
+                $contents = <<<PHP
 <?php
 
 use \Phpmig\Adapter;
@@ -124,6 +159,7 @@ use \Phpmig\Adapter;
 
 return \$container;
 PHP;
+        }
 
         if (false === file_put_contents($bootstrap, $contents)) {
             throw new \RuntimeException('The file "%s" could not be written to', $bootstrap);
@@ -136,6 +172,3 @@ PHP;
         );
     }
 }
-
-
-
