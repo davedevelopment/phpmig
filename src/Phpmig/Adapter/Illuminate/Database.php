@@ -44,7 +44,11 @@ class Database implements AdapterInterface
         $all = $this->adapter
             ->table($this->tableName)
             ->orderBy('version')
-            ->get()->toArray();
+            ->get();
+
+        if(!is_array($all)) {
+            $all = $all->toArray();
+        }
 
         return array_map(function($v) use($fetchMode) {
 
