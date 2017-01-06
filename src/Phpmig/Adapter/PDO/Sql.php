@@ -146,6 +146,7 @@ class Sql implements AdapterInterface
 
         switch($this->pdoDriverName)
         {
+            case 'dblib':
             case 'sqlsrv':
                 $queries = array(
 
