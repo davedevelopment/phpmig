@@ -58,6 +58,15 @@ $
 Note that you can move phpmig.php to config/phpmig.php, the commands will look
 first in the config directory than in the root.
 
+Also you can pass argument into `init` command to choose between different bootstrap file templates.
+
+```bash
+$ phpmig init template
+```
+Currently available options are:
+
+- `bitrix` - for Bitrix framework
+
 Phpmig can generate migrations using the generate command. Migration files are named
 versionnumber_name.php, where version number is made up of 0-9 and name is
 CamelCase or snake\_case. Each migration file should contain a class with the
