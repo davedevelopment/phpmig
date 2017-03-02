@@ -59,6 +59,13 @@ interface AdapterInterface
      * @return AdapterInterface
      */
     public function createSchema();
+    
+    /**
+     * Is the adapter still connected?
+     * 
+     * @return bool
+     */
+    public function isConnected();
 }
 
 

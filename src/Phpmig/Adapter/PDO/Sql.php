@@ -221,5 +221,25 @@ class Sql implements AdapterInterface
 
         return $queries[$type];
     }
+
+    /**
+     * Is the adapter still connected?
+     * 
+     * @return bool
+     */
+    public function isConnected()
+    {
+        try {
+            $this->connection->query('SELECT 1');
+        } catch (\PDOException $pdoE) {
+            if (stristr($pdoE->getMessage(), 'MySQL server has gone away') !== false) {
+                return false;
+            }
+            throw $e;
+        }
+        
+        return true;
+    }
+
 }
 
