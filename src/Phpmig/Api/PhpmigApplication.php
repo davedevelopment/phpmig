@@ -221,4 +221,51 @@ class PhpmigApplication
         }
         return 0;
     }
+
+    /**
+     * Check every migration, load and install it if missing.
+     */
+    public function migrateMissing()
+    {
+        $adapter = !empty($this->container['phpmig.adapter']) ? $this->container['phpmig.adapter'] : null;
+
+        if ($adapter == null) {
+
+            throw new RuntimeException("The container must contain a phpmig.adapter key!");
+        }
+
+        if (!$adapter->hasSchema()) {
+
+            $this->container['phpmig.adapter']->createSchema();
+        }
+
+        foreach ($this->getMissingMigrations() as $migration) {
+            $this->container['phpmig.migrator']->up($migration);
+        }
+    }
+    /**
+     * Load all migrations which are not yet installed
+     *
+     * @return array An array of Phpmig\Migration\Migration objects to process
+     */
+    public function getMissingMigrations()
+    {
+        $versions = $this->container['phpmig.adapter']->fetchAll();
+
+        $migrations = array();
+
+        foreach ($this->migrations as $path) {
+            preg_match('/^[0-9]+/', basename($path), $matches);
+            if (!array_key_exists(0, $matches)) {
+                continue;
+            }
+
+            $version = $matches[0];
+            if (!in_array($version, $versions)) {
+                $migrations[] = $path;
+            }
+        }
+
+        return $this->loadMigrations($migrations);
+    }
 }
