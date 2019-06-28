@@ -191,7 +191,7 @@ In configuration file you need to provide the table name where the migrations wi
 be stored and a create statement. You can use one of the configurations provided
 in the config folder for some common RDBMS.
 
-Here is how the bootstrap file should look like:
+Here is how the bootstrap file should look:
 
 ```php
 <?php
