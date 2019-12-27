@@ -153,7 +153,7 @@ PHP;
             '.' . str_replace(getcwd(), '', $path)
         );
 
-        return;
+        return 0;
     }
 
     protected function transMigName($migrationName)
