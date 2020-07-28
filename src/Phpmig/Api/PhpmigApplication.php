@@ -107,7 +107,6 @@ class PhpmigApplication
         $migrations = $this->migrations;
         $versions   = $this->adapter->fetchAll();
 
-        sort($migrations);
         sort($versions);
 
         $direction = 'up';
