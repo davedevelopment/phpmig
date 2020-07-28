@@ -117,9 +117,6 @@ class PhpmigApplication
 
 
         if ($direction == 'down') {
-            /**
-             * Run downs first
-             */
             rsort($migrations);
 
             foreach($migrations as $path) {

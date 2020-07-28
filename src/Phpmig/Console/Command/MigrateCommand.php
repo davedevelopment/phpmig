@@ -85,9 +85,6 @@ EOT
         $direction = $version > $current ? 'up' : 'down';
 
         if ($direction == 'down') {
-            /**
-             * Run downs first
-             */
             krsort($migrations);
             foreach($migrations as $migration) {
                 if ($migration->getVersion() <= $version) {
