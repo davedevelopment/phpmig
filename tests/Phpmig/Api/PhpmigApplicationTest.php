@@ -104,17 +104,17 @@ class PhpmigApplicationTest extends TestCase
         );
         
         // up
-        $this->assertCount(3, $app->getMigrations(0, $this->next_version));
-        $this->assertCount(3, $app->getMigrations(0, null));
+        $this->assertCount(2, $app->getMigrations(0, $this->next_version));
+        $this->assertCount(2, $app->getMigrations(0, null));
         $this->assertCount(2, $app->getMigrations($this->prev_version, $this->next_version));
-        $this->assertCount(1, $app->getMigrations($this->current_version, $this->next_version));
+        $this->assertCount(2, $app->getMigrations($this->current_version, $this->next_version));
         $this->assertCount(0, $app->getMigrations($this->next_version, $this->next_version));
         
         // down
-        $this->assertCount(1, $app->getMigrations($this->next_version, $this->current_version));
+        $this->assertCount(0, $app->getMigrations($this->next_version, $this->current_version));
         $this->assertCount(1, $app->getMigrations($this->current_version, $this->prev_version));
-        $this->assertCount(2, $app->getMigrations($this->next_version, $this->prev_version));
-        $this->assertCount(3, $app->getMigrations($this->next_version, 0));
+        $this->assertCount(1, $app->getMigrations($this->next_version, $this->prev_version));
+        $this->assertCount(1, $app->getMigrations($this->next_version, 0));
     }
     
     /**
