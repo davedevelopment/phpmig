@@ -28,6 +28,7 @@ class PhpmigApplication
     protected $container;
     protected $output;
     protected $migrations;
+    protected $adapter;
     
     public function __construct(\ArrayAccess $container, OutputInterface $output)
     {
@@ -50,6 +51,7 @@ class PhpmigApplication
         }
         
         $this->migrations = array_unique($migrations);
+        $this->adapter = $container['phpmig.adapter'];
     }
     
     /**
@@ -100,34 +102,63 @@ class PhpmigApplication
      */
     public function getMigrations($from, $to = null)
     {
-        $migrations = array();
-        
-        if ($to > $from || $to === null) {
-            ksort($this->migrations);
-        } else {
-            krsort($this->migrations);
+        $to_run = array();
+
+        $migrations = $this->migrations;
+        $versions   = $this->adapter->fetchAll();
+
+        sort($versions);
+
+        $direction = 'up';
+        if($to !== null ){
+            $direction = $to > $from ? 'up' : 'down';            
         }
-        
-        foreach ($this->migrations as $path) {
-            preg_match('/^[0-9]+/', basename($path), $matches);
-            if (!array_key_exists(0, $matches)) {
-                continue;
-            }
-            
-            $version = $matches[0];
-    
-            // up
-            if ($to > $from || $to === null) {
-                if ($version > $from && ($version <= $to || $to === null)) {
-                    $migrations[] = $path;
+
+
+        if ($direction == 'down') {
+            rsort($migrations);
+
+            foreach($migrations as $path) {
+                preg_match('/^[0-9]+/', basename($path), $matches);
+                if (!array_key_exists(0, $matches)) {
+                    continue;
                 }
-            // down
-            } elseif ($to < $from && $version > $to && $version <= $from) {
-                $migrations[] = $path;
+                
+                $version = $matches[0];
+
+                if ($version > $from) {
+                    continue;
+                }
+                if ($version <= $to) {
+                    continue;
+                }
+
+                if (in_array($version, $versions)) {
+                    $to_run[] = $path;
+                }
             }
+        }else{
+            sort($migrations);
+            foreach($migrations as $path) {
+                preg_match('/^[0-9]+/', basename($path), $matches);
+                if (!array_key_exists(0, $matches)) {
+                    continue;
+                }
+                
+                $version = $matches[0];
+
+                if ($to !== null && ($version > $to)) {
+                    continue;
+                }
+
+                if (!in_array($version, $versions)) {
+                    $to_run[] = $path;
+                }
+            }
+
         }
-        
-        return $this->loadMigrations($migrations);
+
+        return $this->loadMigrations($to_run);
     }
     
     /**
