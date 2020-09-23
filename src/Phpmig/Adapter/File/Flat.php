@@ -18,31 +18,24 @@ use \Phpmig\Adapter\AdapterInterface,
  */
 
 /**
- * Flat file adapter 
+ * Flat file adapter
  *
  * @author      Dave Marshall <david.marshall@atstsolutions.co.uk
  */
 class Flat implements AdapterInterface
 {
     /**
-     * @string
+     * @var string
      */
-    protected $filename = null;
+    protected $filename;
 
-    /**
-     * Construct
-     *
-     * @param string $filename
-     */
-    public function __construct($filename)
+    public function __construct(string $filename)
     {
         $this->filename = $filename;
     }
 
     /**
-     * Get all migrated version numbers
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function fetchAll()
     {
@@ -52,16 +45,13 @@ class Flat implements AdapterInterface
     }
 
     /**
-     * Up
-     *
-     * @param Migration $migration
-     * @return AdapterInterface
+     * {@inheritdoc}
      */
     public function up(Migration $migration)
     {
         $versions = $this->fetchAll();
         if (in_array($migration->getVersion(), $versions)) {
-            return;
+            return $this;
         }
 
         $versions[] = $migration->getVersion();
@@ -70,16 +60,13 @@ class Flat implements AdapterInterface
     }
 
     /**
-     * Down
-     *
-     * @param Migration $migration
-     * @return AdapterInterface
+     * {@inheritdoc}
      */
     public function down(Migration $migration)
     {
         $versions = $this->fetchAll();
         if (!in_array($migration->getVersion(), $versions)) {
-            return;
+            return $this;
         }
 
         unset($versions[array_search($migration->getVersion(), $versions)]);
@@ -88,9 +75,7 @@ class Flat implements AdapterInterface
     }
 
     /**
-     * Is the schema ready? 
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasSchema()
     {
@@ -98,13 +83,11 @@ class Flat implements AdapterInterface
     }
 
     /**
-     * Create Schema
-     *
-     * @return AdapterInterface
+     * {@inheritdoc}
      */
     public function createSchema()
     {
-        if (!is_writeable(dirname($this->filename))) {
+        if (!is_writable(dirname($this->filename))) {
             throw new \InvalidArgumentException(sprintf('The file "%s" is not writeable', $this->filename));
         }
 
@@ -117,8 +100,10 @@ class Flat implements AdapterInterface
 
     /**
      * Write to file
+     *
+     * @param array $versions
      */
-    protected function write($versions)
+    protected function write(array $versions)
     {
         if (false === file_put_contents($this->filename, implode("\n", $versions))) {
             throw new \RuntimeException(sprintf('The file "%s" could not be written to', $this->filename));

@@ -3,7 +3,6 @@
 namespace Phpmig\Adapter\PDO;
 
 use Phpmig\Migration\Migration,
-    Phpmig\Adapter\AdapterInterface,
     PDO;
 
 /**
@@ -12,33 +11,24 @@ use Phpmig\Migration\Migration,
  */
 class SqlPgsql extends Sql
 {
-    private $quote = "\"";
-    private $schemaName = "public";
+    private $quote;
+    private $schemaName;
 
     /**
-     * Constructor
-     *
-     * @param \PDO $connection
+     * @param \PDO   $connection
      * @param string $tableName
+     * @param string $schemaName
      */
     public function __construct(\PDO $connection, $tableName, $schemaName = 'public')
     {
         parent::__construct($connection, $tableName);
         $driver = $this->connection->getAttribute(PDO::ATTR_DRIVER_NAME);
-        $this->quote = in_array($driver, array('mysql', 'pgsql')) ? '"' : '`';
+        $this->quote = in_array($driver, ['mysql', 'pgsql']) ? '"' : '`';
         $this->schemaName = $schemaName;
     }
 
-    private function quotedTableName()
-    {
-        $sql = "{$this->quote}{$this->schemaName}{$this->quote}.{$this->quote}{$this->tableName}{$this->quote}";
-        return $sql;
-    }
-
     /**
-     * Fetch all
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function fetchAll()
     {
@@ -47,10 +37,7 @@ class SqlPgsql extends Sql
     }
 
     /**
-     * Up
-     *
-     * @param Migration $migration
-     * @return self
+     * {@inheritdoc}
      */
     public function up(Migration $migration)
     {
@@ -61,10 +48,7 @@ class SqlPgsql extends Sql
     }
 
     /**
-     * Down
-     *
-     * @param Migration $migration
-     * @return self
+     * {@inheritdoc}
      */
     public function down(Migration $migration)
     {
@@ -74,11 +58,8 @@ class SqlPgsql extends Sql
         return $this;
     }
 
-
     /**
-     * Is the schema ready?
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasSchema()
     {
@@ -91,11 +72,8 @@ class SqlPgsql extends Sql
         return false;
     }
 
-
     /**
-     * Create Schema
-     *
-     * @return DBAL
+     * {@inheritdoc}
      */
     public function createSchema()
     {
@@ -120,5 +98,10 @@ class SqlPgsql extends Sql
         return $this;
     }
 
+    private function quotedTableName()
+    {
+        $sql = "{$this->quote}{$this->schemaName}{$this->quote}.{$this->quote}{$this->tableName}{$this->quote}";
+        return $sql;
+    }
 }
 

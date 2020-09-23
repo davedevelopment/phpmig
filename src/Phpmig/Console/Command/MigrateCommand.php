@@ -7,8 +7,7 @@ namespace Phpmig\Console\Command;
 
 use Symfony\Component\Console\Input\InputInterface,
     Symfony\Component\Console\Input\InputArgument,
-    Symfony\Component\Console\Output\OutputInterface,
-    Symfony\Component\Config\FileLocator;
+    Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * This file is part of phpmig
@@ -70,13 +69,13 @@ EOT
 
         if (null !== $version) {
             if (0 != $version && !isset($migrations[$version])) {
-                return;
+                return 0;
             }
         } else {
             $versionNumbers = array_merge($versions, array_keys($migrations));
 
             if (empty($versionNumbers)) {
-                return;
+                return 0;
             }
 
             $version = max($versionNumbers);
@@ -84,7 +83,7 @@ EOT
 
         $direction = $version > $current ? 'up' : 'down';
 
-        if ($direction == 'down') {
+        if ($direction === 'down') {
             /**
              * Run downs first
              */
