@@ -148,7 +148,11 @@ abstract class AbstractCommand extends Command
             $adapter = $container['phpmig.sets'][$set]['adapter'];
         }
         if (isset($container['phpmig.adapter'])) {
-            $adapter = $container['phpmig.adapter'];
+            if (is_callable($container['phpmig.adapter'])) {
+                $adapter = $container['phpmig.adapter']();
+            } else {
+                $adapter = $container['phpmig.adapter'];
+            }
         }
 
         if (!($adapter instanceof AdapterInterface)) {

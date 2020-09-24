@@ -142,6 +142,11 @@ class Migrator
      */
     public function getAdapter()
     {
+        if (!$this->adapter->isConnected()) {
+            if (is_callable($this->container['phpmig.adapter'])) {
+                $this->adapter = $this->container['phpmig.adapter']();
+            }
+        }
         return $this->adapter;
     }
 
