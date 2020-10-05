@@ -25,16 +25,14 @@ class Database implements AdapterInterface
      */
     protected $adapter;
 
-    public function __construct($adapter, $tableName, $connectionName = '')
+    public function __construct($adapter, string $tableName, string $connectionName = '')
     {
         $this->adapter = $adapter->connection($connectionName);
         $this->tableName = $tableName;
     }
 
     /**
-     * Get all migrated version numbers
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function fetchAll()
     {
@@ -67,10 +65,7 @@ class Database implements AdapterInterface
     }
 
     /**
-     * Up
-     *
-     * @param Migration $migration
-     * @return AdapterInterface
+     * {@inheritdoc}
      */
     public function up(Migration $migration)
     {
@@ -84,10 +79,7 @@ class Database implements AdapterInterface
     }
 
     /**
-     * Down
-     *
-     * @param Migration $migration
-     * @return AdapterInterface
+     * {@inheritdoc}
      */
     public function down(Migration $migration)
     {
@@ -100,9 +92,7 @@ class Database implements AdapterInterface
     }
 
     /**
-     * Is the schema ready?
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasSchema()
     {
@@ -110,9 +100,7 @@ class Database implements AdapterInterface
     }
 
     /**
-     * Create Schema
-     *
-     * @return AdapterInterface
+     * {@inheritdoc}
      */
     public function createSchema()
     {
@@ -120,5 +108,7 @@ class Database implements AdapterInterface
         $this->adapter->getSchemaBuilder()->create($this->tableName, function ($table) {
             $table->string('version');
         });
+
+        return $this;
     }
 }

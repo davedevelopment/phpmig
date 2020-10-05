@@ -14,37 +14,31 @@ class MongoDb implements AdapterInterface
     /**
      * @var Database
      */
-    protected $connection = null;
+    protected $connection;
 
     /**
      * @var string
      */
-    protected $tableName = null;
+    protected $tableName;
 
-    /**
-     * @param Database $connection
-     * @param string   $tableName
-     */
-    public function __construct(Database $connection, $tableName)
+    public function __construct(Database $connection, string $tableName)
     {
         $this->connection = $connection;
         $this->tableName = $tableName;
     }
 
     /**
-     * Fetch all
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function fetchAll()
     {
         $cursor = $this->connection->selectCollection($this->tableName)->find(
-            array(),
-            array('$project' => array('version' => 1))
+            [],
+            ['$project' => ['version' => 1]]
         );
 
         return array_map(
-            function ($document) {
+            static function ($document) {
                 return $document['version'];
             },
             $cursor->toArray()
@@ -52,40 +46,29 @@ class MongoDb implements AdapterInterface
     }
 
     /**
-     * Up
-     *
-     * @param Migration $migration
-     *
-     * @return AdapterInterface
+     * {@inheritdoc}
      */
     public function up(Migration $migration)
     {
-        $document = array('version' => $migration->getVersion());
-        $this->connection->selectCollection($this->tableName)->insertOne($document);
+        $this->connection->selectCollection($this->tableName)
+            ->insertOne(['version' => $migration->getVersion()]);
 
         return $this;
     }
 
     /**
-     * Down
-     *
-     * @param Migration $migration
-     *
-     * @return AdapterInterface
+     * {@inheritdoc}
      */
     public function down(Migration $migration)
     {
-        $document = array('version' => $migration->getVersion());
-        $this->connection->selectCollection($this->tableName)->deleteOne($document);
+        $this->connection->selectCollection($this->tableName)
+            ->deleteOne(['version' => $migration->getVersion()]);
 
         return $this;
     }
 
-
     /**
-     * Is the schema ready?
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasSchema()
     {
@@ -98,17 +81,13 @@ class MongoDb implements AdapterInterface
         return false;
     }
 
-
     /**
-     * Create Schema
-     *
-     * @return AdapterInterface
+     * {@inheritdoc}
      */
     public function createSchema()
     {
-        $key = array('version' => 1);
-        $options = array('unique' => true);
-        $this->connection->selectCollection($this->tableName)->createIndex($key, $options);
+        $this->connection->selectCollection($this->tableName)
+            ->createIndex(['version' => 1], ['unique' => true]);
 
         return $this;
     }

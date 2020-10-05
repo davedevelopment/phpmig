@@ -102,7 +102,7 @@ EOT
             return;
         }
 
-        if (!is_writeable(dirname($bootstrap))) {
+        if (!is_writable(dirname($bootstrap))) {
             throw new \RuntimeException(sprintf('The file "%s" is not writeable', $bootstrap));
         }
 

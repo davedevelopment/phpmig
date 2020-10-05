@@ -37,32 +37,14 @@ class DbAdapter implements AdapterInterface
      */
     private $adapter;
 
-    /**
-     * @param Adapter $adapter
-     * @param string $tableName
-     */
-    public function __construct(Adapter $adapter, $tableName)
+    public function __construct(Adapter $adapter, string $tableName)
     {
         $this->adapter   = $adapter;
         $this->tableName = $tableName;
     }
 
     /**
-     * @return TableGateway
-     */
-    private function tableGateway()
-    {
-        if (!$this->tableGateway) {
-            $this->tableGateway = new TableGateway($this->tableName, $this->adapter);
-        }
-
-        return $this->tableGateway;
-    }
-
-    /**
-     * Get all migrated version numbers
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function fetchAll()
     {
@@ -71,16 +53,13 @@ class DbAdapter implements AdapterInterface
         })->toArray();
 
         // imitate fetchCol
-        return array_map(function ($item) {
+        return array_map(static function ($item) {
             return $item['version'];
         }, $result);
     }
 
     /**
-     * Up
-     *
-     * @param Migration $migration
-     * @return AdapterInterface
+     * {@inheritdoc}
      */
     public function up(Migration $migration)
     {
@@ -89,27 +68,24 @@ class DbAdapter implements AdapterInterface
     }
 
     /**
-     * Down
-     *
-     * @param Migration $migration
-     * @return AdapterInterface
+     * {@inheritdoc}
      */
     public function down(Migration $migration)
     {
         $this->tableGateway()->delete(['version' => $migration->getVersion()]);
+
         return $this;
     }
 
     /**
-     * Is the schema ready?
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasSchema()
     {
         try {
             $metadata = new Metadata($this->adapter);
             $metadata->getTable($this->tableName);
+
             return true;
         } catch (\Exception $exception) {
             return false;
@@ -117,9 +93,7 @@ class DbAdapter implements AdapterInterface
     }
 
     /**
-     * Create Schema
-     *
-     * @return AdapterInterface
+     * {@inheritdoc}
      */
     public function createSchema()
     {
@@ -134,5 +108,17 @@ class DbAdapter implements AdapterInterface
         );
 
         return $this;
+    }
+
+    /**
+     * @return TableGateway
+     */
+    private function tableGateway()
+    {
+        if (!$this->tableGateway) {
+            $this->tableGateway = new TableGateway($this->tableName, $this->adapter);
+        }
+
+        return $this->tableGateway;
     }
 }

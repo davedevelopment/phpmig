@@ -2,8 +2,7 @@
 
 namespace Phpmig\Adapter;
 
-use Phpmig\Migration\Migration,
-    Phpmig\Adapter\AdapterInterface;
+use Phpmig\Migration\Migration;
 
 /**
  * @author Samuel Laulhau https://github.com/lalop
@@ -11,23 +10,16 @@ use Phpmig\Migration\Migration,
 
 class Mongo implements AdapterInterface
 {
-
     /**
      * @var \MongoDb
      */
-    protected $connection    = null;
+    protected $connection;
 
     /**
      * @var string
      */
-    protected $tableName     = null;
+    protected $tableName;
 
-    /**
-     * Constructor
-     *
-     * @param \MongoDb $connection
-     * @param string $tableName
-     */
     public function __construct(\MongoDb $connection, $tableName)
     {
         $this->connection    = $connection;
@@ -35,73 +27,62 @@ class Mongo implements AdapterInterface
     }
 
     /**
-     * Fetch all
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function fetchAll()
     {
         $cursor = $this->connection->selectCollection($this->tableName)->find();
-        $versions = array();
-        foreach($cursor as $version) $versions[] = $version['version'];
+        $versions = [];
+        foreach($cursor as $version) {
+            $versions[] = $version['version'];
+        }
+
         return $versions;
     }
 
     /**
-     * Up
-     *
-     * @param Migration $migration
-     * @return self
+     * {@inheritdoc}
      */
     public function up(Migration $migration)
     {
-        $document = array('version' => $migration->getVersion());
-        $this->connection->selectCollection($this->tableName)->insert($document);
+        $this->connection->selectCollection($this->tableName)
+            ->insert(['version' => $migration->getVersion()]);
 
         return $this;
     }
 
     /**
-     * Down
-     *
-     * @param Migration $migration
-     * @return self
+     * {@inheritdoc}
      */
     public function down(Migration $migration)
     {
-        $document = array('version' => $migration->getVersion());
-        $this->connection->selectCollection($this->tableName)->remove($document);
+        $this->connection->selectCollection($this->tableName)
+            ->remove(['version' => $migration->getVersion()]);
 
         return $this;
     }
 
 
     /**
-     * Is the schema ready?
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasSchema()
     {
-        $tableName = $this->tableName;
-        return array_filter(
+        return !empty(array_filter(
             $this->connection->getCollectionNames(),
-            function( $collection ) use ($tableName) {
-                return $collection === $tableName;
-        });
+            function($collection) {
+                return $collection === $this->tableName;
+        }));
     }
 
 
     /**
-     * Create Schema
-     *
-     * @return DBAL
+     * {@inheritdoc}
      */
     public function createSchema()
     {
-        $keys = 'version';
-        $options = array('unique' => 1);
-        $this->connection->selectCollection($this->tableName)->ensureIndex($keys, $options);
+        $this->connection->selectCollection($this->tableName)
+            ->ensureIndex('version', ['unique' => 1]);
 
         return $this;
     }

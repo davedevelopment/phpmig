@@ -30,45 +30,35 @@ class DBAL implements AdapterInterface
     /**
      * @var \Doctrine\DBAL\Connection
      */
-    protected $connection = null;
+    protected $connection;
 
     /**
      * @var string
      */
-    protected $tableName = null;
+    protected $tableName;
 
-    /**
-     * Constructor
-     *
-     * @param Connection $connection
-     * @param string $tableName
-     */
-    public function __construct(Connection $connection, $tableName)
+    public function __construct(Connection $connection, string $tableName)
     {
         $this->connection = $connection;
         $this->tableName  = $tableName;
     }
 
     /**
-     * Fetch all 
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function fetchAll()
     {
         $tableName = $this->connection->quoteIdentifier($this->tableName);
         $sql = "SELECT version FROM $tableName ORDER BY version ASC";
         $all = $this->connection->fetchAll($sql);
+
         return array_map(function($v) {return $v['version'];}, $all);
     }
 
     /**
-     * Up
-     *
-     * @param Migration $migration
-     * @return DBAL
+     * {@inheritdoc}
      */
-    public function up(Migration $migration) 
+    public function up(Migration $migration)
     {
         $this->connection->insert($this->tableName, array(
             'version' => $migration->getVersion(),
@@ -78,10 +68,7 @@ class DBAL implements AdapterInterface
     }
 
     /**
-     * Down
-     *
-     * @param Migration $migration
-     * @return DBAL
+     * {@inheritdoc}
      */
     public function down(Migration $migration)
     {
@@ -93,9 +80,7 @@ class DBAL implements AdapterInterface
     }
 
     /**
-     * Is the schema ready? 
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasSchema()
     {
@@ -106,13 +91,12 @@ class DBAL implements AdapterInterface
                 return true;
             }
         }
+
         return false;
     }
 
     /**
-     * Create Schema
-     *
-     * @return DBAL
+     * {@inheritdoc}
      */
     public function createSchema()
     {
@@ -123,8 +107,8 @@ class DBAL implements AdapterInterface
         foreach($queries as $sql) {
             $this->connection->query($sql);
         }
+
         return $this;
     }
-
 }
 

@@ -7,8 +7,6 @@ namespace Phpmig\Console;
 
 use Phpmig\Console\Command;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * This file is part of phpmig
