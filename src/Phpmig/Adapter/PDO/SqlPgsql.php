@@ -88,7 +88,7 @@ class SqlPgsql extends Sql
             }
         }
 
-        $sql = "CREATE table {$this->quotedTableName()} (version %s NOT NULL, {$this->quote}migrate_date{$this->quote} timestamp(6) WITH TIME ZONE DEFAULT now())";
+        $sql = "CREATE table {$this->quotedTableName()} (version %s NOT NULL, {$this->quote}migrate_date{$this->quote} timestamp WITH TIME ZONE DEFAULT now())";
         $driver = $this->connection->getAttribute(PDO::ATTR_DRIVER_NAME);
         $sql = sprintf($sql, in_array($driver, array('mysql', 'pgsql')) ? 'VARCHAR(255)' : '');
 
