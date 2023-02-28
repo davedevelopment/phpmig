@@ -7,20 +7,22 @@
     "license": "MIT",
     "authors": [{
         "name": "Dave Marshall",
-        "email": "dave.marshall@atstsolutions.co.uk",
         "homepage": "http://davedevelopment.co.uk"
     },
     {
-        "name": "David Nielsen",
-        "email": "david@panmedia.co.nz"
+        "name": "David Nielsen"
+    },
+    {
+        "name": "Sven Keil",
+        "homepage": "https://skeilit.de"
     }],
     "require": {
-        "php": ">=7.1",
-        "symfony/console": "^2.0||^3.0||^4.0||^5.0",
-        "symfony/config": "^2.0||^3.0||^4.0||^5.0"
+        "php": "^7.2 || ^8.0",
+        "symfony/console": "^4.0||^5.0||^6.0",
+        "symfony/config": "^4.0||^5.0||^6.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.5||^8.5||^9.2",
+        "phpunit/phpunit": "^8.5 || ^9.5",
         "mockery/mockery": "*@dev"
     },
     "suggest": {
