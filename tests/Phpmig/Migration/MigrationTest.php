@@ -4,8 +4,10 @@ namespace Phpmig\Migration;
 
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class MigrationTest extends TestCase
 {
@@ -15,7 +17,12 @@ class MigrationTest extends TestCase
     private $migrationOutput;
 
     /**
-     * @var DialogHelper|m\MockInterface
+     * @var InputInterface|m\MockInterface
+     */
+    private $migrationInput;
+
+    /**
+     * @var QuestionHelper|m\MockInterface
      */
     private $migrationDialogHelper;
 
@@ -27,10 +34,12 @@ class MigrationTest extends TestCase
     public function setUp(): void
     {
         $this->migrationOutput = m::mock('Symfony\Component\Console\Output\OutputInterface')->shouldIgnoreMissing();
-        $this->migrationDialogHelper = m::mock('Symfony\Component\Console\Helper\DialogHelper')->shouldIgnoreMissing();
+        $this->migrationInput = m::mock('Symfony\Component\Console\Input\InputInterface')->shouldIgnoreMissing();
+        $this->migrationDialogHelper = m::mock('Symfony\Component\Console\Helper\QuestionHelper')->shouldIgnoreMissing();
 
         $this->migration = new Migration(1);
         $this->migration->setOutput($this->migrationOutput);
+        $this->migration->setInput($this->migrationInput);
         $this->migration->setDialogHelper($this->migrationDialogHelper);
     }
 
@@ -40,11 +49,11 @@ class MigrationTest extends TestCase
     public function shouldAskForInput()
     {
         $this->migrationDialogHelper->shouldReceive('ask')
-            ->with($this->migrationOutput, $question = 'Wat?', $default = 'huh?')
+            ->with($this->migrationInput, $this->migrationOutput, $question = new Question('Wat?','huh?'))
             ->andReturn($ans = 'dave')
             ->once();
 
-        $this->assertEquals($ans, $this->migration->ask($question, $default));
+        $this->assertEquals($ans, $this->migration->ask($question));
     }
 
     /**
@@ -52,12 +61,12 @@ class MigrationTest extends TestCase
      */
     public function shouldAskForConfirmation()
     {
-        $this->migrationDialogHelper->shouldReceive('askConfirmation')
-            ->with($this->migrationOutput, $question = 'Wat?', $default = true)
+        $this->migrationDialogHelper->shouldReceive('ask')
+            ->with($this->migrationInput, $this->migrationOutput, $question = new Question('Wat?',true))
             ->andReturn($ans = 'dave')
             ->once();
 
-        $this->assertEquals($ans, $this->migration->confirm($question, $default));
+        $this->assertEquals($ans, $this->migration->confirm($question));
     }
 
     /**
