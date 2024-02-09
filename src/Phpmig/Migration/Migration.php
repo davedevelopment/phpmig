@@ -158,7 +158,7 @@ class Migration
     }
 
     /**
-     * Get Output
+     * Get Input
      *
      * @return InputInterface
      */
@@ -180,9 +180,9 @@ class Migration
     }
 
     /**
-     * Set Output
+     * Set Input
      *
-     * @param InputInterface $output
+     * @param InputInterface $input
      * @return Migration
      */
     public function setInput(InputInterface $input): Migration
