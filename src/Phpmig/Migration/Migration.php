@@ -5,8 +5,10 @@
  */
 namespace Phpmig\Migration;
 
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Question\Question;
 
 /**
  * This file is part of phpmig
@@ -42,7 +44,12 @@ class Migration
     protected $output = null;
 
     /**
-     * @var DialogHelper
+     * @var InputInterface
+     */
+    protected $input = null;
+
+    /**
+     * @var QuestionHelper
      */
     protected $dialogHelper = null;
 
@@ -91,7 +98,7 @@ class Migration
      *
      * @return int
      */
-    public function getVersion()
+    public function getVersion(): ?int
     {
         return $this->version;
     }
@@ -102,7 +109,7 @@ class Migration
      * @param int $version
      * @return Migration
      */
-    public function setVersion($version)
+    public function setVersion(int $version): Migration
     {
         $this->version = $version;
         return $this;
@@ -113,7 +120,7 @@ class Migration
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return get_class($this);
     }
@@ -123,7 +130,7 @@ class Migration
      *
      * @return \ArrayAccess
      */
-    public function getContainer()
+    public function getContainer(): ?\ArrayAccess
     {
         return $this->container;
     }
@@ -132,9 +139,9 @@ class Migration
      * Set Container
      *
      * @param \ArrayAccess $container
-     * @return Migrator
+     * @return Migration
      */
-    public function setContainer(\ArrayAccess $container)
+    public function setContainer(\ArrayAccess $container): Migration
     {
         $this->container = $container;
         return $this;
@@ -145,45 +152,65 @@ class Migration
      *
      * @return OutputInterface
      */
-    public function getOutput()
+    public function getOutput(): ?OutputInterface
     {
         return $this->output;
+    }
+
+    /**
+     * Get Input
+     *
+     * @return InputInterface
+     */
+    public function getInput(): ?InputInterface
+    {
+        return $this->input;
     }
 
     /**
      * Set Output
      *
      * @param OutputInterface $output
-     * @return Migrator
+     * @return Migration
      */
-    public function setOutput(OutputInterface $output)
+    public function setOutput(OutputInterface $output): Migration
     {
         $this->output = $output;
         return $this;
     }
 
     /**
+     * Set Input
+     *
+     * @param InputInterface $input
+     * @return Migration
+     */
+    public function setInput(InputInterface $input): Migration
+    {
+        $this->input = $input;
+        return $this;
+    }
+
+    /**
      * Ask for input
      *
-     * @param string $question
-     * @param mixed $default
+     * @param Question $question
      * @return string The users answer
      */
-    public function ask($question, $default = null)
+    public function ask(Question $question): string
     {
-        return $this->getDialogHelper()->ask($this->getOutput(), $question, $default);
+        return $this->getDialogHelper()->ask($this->getInput(), $this->getOutput(), $question);
     }
 
     /**
      * Ask for confirmation
      *
-     * @param string $question
-     * @param mixed $default
+     * @param Question $question
      * @return string The users answer
      */
-    public function confirm($question, $default = true)
+    public function confirm(Question $question): string
     {
-        return $this->getDialogHelper()->askConfirmation($this->getOutput(), $question, $default);
+        return $this->getDialogHelper()->ask($this->getInput(), $this->getOutput(), $question);
     }
 
     /**
@@ -201,24 +228,24 @@ class Migration
     /**
      * Get Dialog Helper
      *
-     * @return DialogHelper
+     * @return QuestionHelper
      */
-    public function getDialogHelper()
+    public function getDialogHelper(): ?QuestionHelper
     {
         if ($this->dialogHelper) {
             return $this->dialogHelper;
         }
 
-        return $this->dialogHelper = new DialogHelper();
+        return $this->dialogHelper = new QuestionHelper();
     }
 
     /**
      * Set Dialog Helper
      *
-     * @param DialogHelper $dialogHelper
+     * @param QuestionHelper $dialogHelper
      * @return Migration
      */
-    public function setDialogHelper(DialogHelper $dialogHelper)
+    public function setDialogHelper(QuestionHelper $dialogHelper): Migration
     {
         $this->dialogHelper = $dialogHelper;
         return $this;

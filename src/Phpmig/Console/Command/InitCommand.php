@@ -43,7 +43,7 @@ EOT
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $cwd = getcwd();
         $bootstrap = $cwd . DIRECTORY_SEPARATOR . 'phpmig.php';
