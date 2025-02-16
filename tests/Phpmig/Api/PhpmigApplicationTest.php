@@ -317,7 +317,7 @@ class PhpmigApplicationTest extends TestCase
         rmdir($dir);
     }
     
-    protected function createTestMigrations(array $migrations, array $class_names = null, $extends = "Migration")
+    protected function createTestMigrations(array $migrations, ?array $class_names = null, $extends = "Migration")
     {
         $class =<<< 'CODE'
 <?php
